@@ -1,0 +1,294 @@
+<%- contentFor('HeaderCss') %>
+<!-- jsvectormap css -->
+<link
+  href="/assets/libs/jsvectormap/css/jsvectormap.min.css"
+  rel="stylesheet"
+  type="text/css"
+/>
+
+<!--Swiper slider css-->
+<link
+  href="/assets/libs/swiper/swiper-bundle.min.css"
+  rel="stylesheet"
+  type="text/css"
+/>
+<%- contentFor('body') %>
+
+<div class="row">
+  <div class="col">
+    <div class="h-100">
+      <div class="row">
+        <!-- card -->
+        <div class="">
+          <div class="card">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h4 class="card-title mb-0">วิเคราะห์แนวโน้มรถเข้าลานประมูล</h4>
+              <div class="d-flex gap-2">
+                <select id="filterType" class="form-select w-auto">
+                  <option value="quarter">Quarter</option>
+                  <option value="month">Month</option>
+                </select>
+                <select id="filterAuction" class="form-select w-auto">
+                  <option value="all" selected>All Auctions</option>
+                  <option value="Apple">Apple Auction</option>
+                  <option value="Motto">Motto Auction</option>
+                  <option value="Express">Auction express</option>
+                  <option value="BuyAtSiam">Buy at siam</option>
+                  <option value="Inter">Inter Auction</option>
+                  <option value="Premium">Premium inter Auction</option>
+                  <option value="Sahakrane">Sahakrane Auction</option>
+                  <option value="Siaminter">Siaminter Auction</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body">
+              <div
+                id="column_chart_1"
+                data-colors='["--vz-danger", "--vz-warning", "--vz-success"]'
+                class="apex-charts"
+                dir="ltr"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- card -->
+        <div class="">
+          <div class="card">
+            <div
+              class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="card-title mb-0">สัดส่วนรถเข้าลานประมูล</h4>
+            </div>
+            <div class="card-body">
+              <div
+                id="column_chart_2"
+                data-colors='["--vz-danger", "--vz-warning", "--vz-success"]'
+                class="apex-charts"
+                dir="ltr"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="">
+          <div class="card">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h4 class="card-title mb-0">จำนวนรถที่เข้าลานประมูล</h4>
+              <select id="filterChart" class="form-select w-auto">
+                <option value="quarter">Quarter</option>
+                <option value="month">Month</option>
+                <option value="week">Week</option>
+              </select>
+            </div>
+            <div class="card-body">
+              <canvas
+                id="bar1"
+                class="chartjs-chart"
+                height="400"
+                data-colors='["--vz-primary"]'
+              ></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title mb-0">Column with Data Labels</h4>
+            </div>
+            <!-- end card header -->
+
+            <div class="card-body">
+              <div
+                id="column_chart_datalabel"
+                data-colors='["--vz-primary"]'
+                class="apex-charts"
+                dir="ltr"
+              ></div>
+            </div>
+            <!-- end card-body -->
+          </div>
+          <!-- end card -->
+        </div>
+      </div>
+
+      <!-- end row-->
+    </div>
+    <!-- end .h-100-->
+  </div>
+  <!-- end col -->
+
+  <!-- end col -->
+</div>
+<%- contentFor('FooterJs') %>
+
+<script>
+  function getChartColorsArray(elementId) {
+    var element = document.getElementById(elementId);
+    if (!element) return [];
+
+    var dataColors = element.getAttribute("data-colors");
+    if (!dataColors) return [];
+
+    try {
+      var colors = JSON.parse(dataColors.trim());
+      return colors.map(function (color) {
+        var trimmedColor = color.trim();
+        if (!trimmedColor.includes(",")) {
+          var cssVarValue = getComputedStyle(
+            document.documentElement
+          ).getPropertyValue(trimmedColor);
+          return cssVarValue || trimmedColor;
+        }
+        var colorParts = trimmedColor.split(",");
+        if (colorParts.length === 2) {
+          var baseColor = getComputedStyle(
+            document.documentElement
+          ).getPropertyValue(colorParts[0].trim());
+          var opacity = colorParts[1].trim();
+          return `rgba(${baseColor}, ${opacity})`;
+        }
+        return trimmedColor;
+      });
+    } catch (error) {
+      console.error("Invalid data-colors format:", error);
+      return [];
+    }
+  }
+
+  // --------------------------chart-------------------------------------
+  var chart; var chart2;
+
+  function updateChart() {
+    var filterType = document.getElementById("filterType").value;
+    var filterAuction = document.getElementById("filterAuction").value;
+
+    var chartColumnColors = getChartColorsArray("column_chart_1");
+
+    var seriesData = <%- data %>; // ดึงข้อมูลจากเซิร์ฟเวอร์
+
+    var categoriesData = {
+        quarter: ["Q1", "Q2", "Q3", "Q4"],
+        month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    };
+
+    var selectedData = seriesData[filterType][filterAuction] || seriesData[filterType]["all"];
+    var selectedCategories = categoriesData[filterType] || categoriesData["month"];
+
+    // ดึงปีทั้งหมดที่มีจากข้อมูล
+    var years = Object.keys(selectedData).sort(); // เรียงลำดับปี
+    var seriesArray = years.map(year => ({
+        name: `แนวโน้มรถเข้าลานประมูล ${seriesData.years[year]}`,
+        data: selectedData[year] || new Array(selectedCategories.length).fill(0) // ถ้าไม่มีข้อมูลใช้ 0
+    }));
+
+    var options = {
+        chart: { height: 350, type: "bar", toolbar: { show: false } },
+        plotOptions: { bar: { horizontal: false, columnWidth: "45%", endingShape: "rounded" } },
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ["transparent"] },
+        series: seriesArray,
+        colors: chartColumnColors,
+        xaxis: { categories: selectedCategories },
+        yaxis: { title: { text: "จำนวนรถ (คัน)" } },
+        grid: { borderColor: "#f1f1f1" },
+        fill: { opacity: 1 },
+        tooltip: {
+            y: {
+                formatter: function (value) {
+                    return "รถ " + value + " คัน";
+                }
+            }
+        }
+    };
+
+    if (chart) {
+        chart.updateOptions(options);
+    } else {
+        chart = new ApexCharts(document.querySelector("#column_chart_1"), options);
+        chart.render();
+    }
+}
+
+// ----------------------------------chart 2 ------------------------------
+function updateChart2() {
+    var chartColumnColors = getChartColorsArray("column_chart_2");
+    var datause = <%- data2 %>;
+    var seriesData = datause.data;
+    var years = datause.years;
+
+    var categoriesData = Object.keys(seriesData); // ดึงรายชื่อบริษัทจาก seriesData
+
+    // คำนวณยอดรวมของแต่ละปีเพื่อใช้แปลงเป็นเปอร์เซ็นต์
+    var totalPerYear = years.map((_, index) =>
+        categoriesData.reduce((sum, company) => sum + (seriesData[company][index] || 0), 0)
+    );
+
+    var options = {
+        chart: { height: 350, type: "bar", toolbar: { show: false } },
+        plotOptions: {
+            bar: { horizontal: false, columnWidth: "45%", endingShape: "rounded" },
+        },
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ["transparent"] },
+        series: years.map((year, index) => ({
+            name: `ปี ${year}`,
+            data: categoriesData.map(company => {
+                var value = seriesData[company][index] || 0;
+                var total = totalPerYear[index] || 1; // ป้องกันหารด้วย 0
+                return ((value / total) * 100).toFixed(2); // คำนวณเป็นเปอร์เซ็นต์ และปัดเศษทศนิยม 2 ตำแหน่ง
+            }),
+        })),
+        colors: chartColumnColors,
+        xaxis: { categories: categoriesData },
+        yaxis: { title: { text: "เปอร์เซ็นต์ (%)" } },
+        grid: { borderColor: "#f1f1f1" },
+        fill: { opacity: 1 },
+        tooltip: {
+            y: {
+                formatter: function (e) {
+                    return e + " %";
+                },
+            },
+        },
+    };
+
+    if (chart2) {
+        chart2.updateOptions(options);
+    } else {
+        chart2 = new ApexCharts(document.querySelector("#column_chart_2"), options);
+        chart2.render();
+    }
+}
+
+// Event listeners
+document.getElementById("filterType").addEventListener("change", function () {
+  updateChart();
+});
+document.getElementById("filterAuction").addEventListener("change", function () {
+  updateChart();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  updateChart();
+  updateChart2();
+});
+</script>
+<!-- apexcharts -->
+<script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
+<!-- <script src="/assets/js/pages/apexcharts-column.init.js"></script> -->
+<script src="/assets/libs/chart.js/chart.umd.js"></script>
+<script src="/assets/js/pages/chartjs.init.js"></script>
+<!-- Vector map-->
+<script src="/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+<script src="/assets/libs/jsvectormap/maps/world-merc.js"></script>
+
+<!--Swiper slider js-->
+<script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
+
+<!-- Dashboard init -->
+<script src="/assets/js/pages/dashboard-ecommerce.init.js"></script>

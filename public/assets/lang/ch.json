@@ -1,0 +1,9 @@
+{
+    "t_dashboards": "仪表板",
+    "t_config": "配置",
+    "t_schedule": "日程",
+    "t_status": "状态",
+    "t_load_image": "加载图片",
+    "t_db_upload": "数据库上传",
+    "t_downloads_directory": "下载目录"
+}

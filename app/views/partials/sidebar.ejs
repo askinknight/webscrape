@@ -1,0 +1,164 @@
+<!-- ========== App Menu ========== -->
+<div class="app-menu navbar-menu">
+  <!-- LOGO -->
+  <div class="navbar-brand-box">
+    <!-- Dark Logo-->
+    <a href="/index" class="logo logo-dark">
+      <span class="logo-sm">
+        <img src="/assets/images/logo-sm.png" alt="" height="22">
+      </span>
+      <span class="logo-lg">
+        <!--<img src="/assets/images/logo-dark.png" alt="" height="17">-->
+        <h4 class="mt-4">WEB SCRAPING</h4>
+      </span>
+    </a>
+    <!-- Light Logo-->
+    <a href="/index" class="logo logo-light">
+      <span class="logo-sm">
+        <img src="/assets/images/logo-sm.png" alt="" height="22">
+      </span>
+      <span class="logo-lg">
+        <!--<img src="/assets/images/logo-light.png" alt="" height="17"> -->
+        <h4 class="mt-4">WEB SCRAPING</h4>
+      </span>
+    </a>
+    <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+      <i class="ri-record-circle-line"></i>
+    </button>
+  </div>
+
+  <div id="scrollbar">
+    <div class="container-fluid">
+      <div id="two-column-menu"></div>
+      <ul class="navbar-nav" id="navbar-nav">
+        <li class="menu-title">
+          <span data-key="t-menu">
+            <%= translation.t_menu %>
+          </span>
+        </li>
+
+        <!-- Dashboard -->
+        <% if(roleMap[session.user.role].includes("DB")){%>
+        <li class="nav-item">
+          <a class="nav-link menu-link" href="/data">
+            <i  class=" ri-bar-chart-box-line "></i>
+            <span data-key="t-dashboards">
+              <%= translation.t_dashboards %>
+            </span>
+          </a>
+        </li>
+        <% } %>
+
+        <!-- status dashboard -->
+        <% if(roleMap[session.user.role].includes("DB")){%>
+          <li class="nav-item">
+            <a class="nav-link menu-link" href="/">
+              <i  class=" ri-dashboard-line"></i>
+              <span data-key="status_DB">
+                Status Dashboard
+              </span>
+            </a>
+          </li>
+          <% } %>
+
+           <!-- Schedule -->
+        <% if(roleMap[session.user.role].includes("schedule")){%>
+          <li class="nav-item">
+            <a class="nav-link menu-link" href="/schedule">
+              <i  class="ri-calendar-line"></i>
+              <span data-key="t-schedule">
+                <%= translation.t_schedule %>
+              </span>
+            </a>
+          </li>
+          <% } %>
+  
+          <!-- Status -->
+          <% if(roleMap[session.user.role].includes("status")){%>
+          <li class="nav-item">
+            <a class="nav-link menu-link" href="/status">
+              <i  class="ri-task-line"></i>
+              <span data-key="t-status">
+                <%= translation.t_status %>
+              </span>
+            </a>
+          </li>
+          <% } %>
+
+          <li class="nav-item">
+            <a class="nav-link menu-link" href="/edit">
+              <i data-feather="image" class="icon-dual"></i>
+              <span data-key="t-load_image">
+               Database Management
+              </span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link menu-link" href="/doc">
+              <i data-feather="image" class="icon-dual"></i>
+              <span data-key="t-load_image">
+               Seller Edit
+              </span>
+            </a>
+          </li>
+
+        <!-- userManage -->
+        <% if(roleMap[session.user.role].includes("config")){%>
+        <li class="nav-item">
+          <a class="nav-link menu-link" href="/config">
+            <i  class="ri-list-settings-line"></i>
+            <span data-key="t-config">
+              <%= translation.t_config %>
+            </span>
+          </a>
+        </li>
+        <% } %>
+
+        <!-- Config -->
+        <% if(roleMap[session.user.role].includes("admin")){%>
+          <li class="nav-item">
+            <a class="nav-link menu-link" href="/admin">
+              <i  class=" ri-user-settings-line"></i>
+              <span data-key="t-admin">
+                User Management
+              </span>
+            </a>
+          </li>
+          <% } %>
+
+
+        <% if(roleMap[session.user.role].includes("dir_mng")){%>
+        <li class="nav-item">
+          <a class="nav-link menu-link" href="/downloads">
+            <i class="ri-folder-line"></i>
+            <span data-key="t-downloads_directory">
+              <%= translation.t_downloads_directory %>
+            </span>
+          </a>
+        </li>
+        <% } %>
+
+        <!-- <li class="nav-item">
+          <a class="nav-link menu-link" href="/db-upload">
+            <i data-feather="upload-cloud" class="icon-dual"></i>
+            <span data-key="t-db_upload">
+              <%= translation.t_db_upload %>
+            </span>
+          </a>
+        </li> -->
+
+         <!-- Downloads Directory  -->
+        
+
+        
+
+      </ul>
+    </div>
+  </div>
+
+  <div class="sidebar-background"></div>
+</div>
+<!-- Left Sidebar End -->
+<!-- Vertical Overlay-->
+<div class="vertical-overlay"></div>

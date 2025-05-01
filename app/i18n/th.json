@@ -1,0 +1,9 @@
+{
+    "t_dashboards": "แดชบอร์ด",
+    "t_config": "การตั้งค่า",
+    "t_schedule": "ตารางเวลา",
+    "t_status": "สถานะ",
+    "t_load_image": "โหลดรูปภาพ",
+    "t_db_upload": "อัปโหลดฐานข้อมูล",
+    "t_downloads_directory": "จัดการโฟร์เดอร์"
+}

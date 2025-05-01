@@ -1,0 +1,222 @@
+<%- contentFor('HeaderCss') %>
+    <!-- jsvectormap css -->
+    <link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Swiper slider css -->
+    <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+    <%- contentFor('body') %>
+        <style>
+            .tab {
+                margin: 10px 0;
+                /* เพิ่มระยะห่างด้านบนและล่าง */
+            }
+
+            .tab-item {
+                margin-bottom: 5px;
+                /* ระยะห่างระหว่างแท็บ */
+            }
+
+            .dropdown-item {
+                transition: background-color 0.3s;
+                /* เพิ่มเอฟเฟกต์การเปลี่ยนสี */
+            }
+
+            .dropdown-item:hover {
+                background-color: #f8f9fa;
+                /* เปลี่ยนสีพื้นหลังเมื่อวางเมาส์ */
+            }
+
+            .tablinks {
+                background-color: #007bff;
+                /* เปลี่ยนสีพื้นหลัง */
+                color: white;
+                /* เปลี่ยนสีตัวอักษร */
+                border: none;
+                /* ไม่ให้มีเส้นขอบ */
+                border-radius: 5px;
+                /* มุมโค้งมน */
+                padding: 10px;
+                /* เพิ่ม padding */
+                transition: background-color 0.3s;
+                /* เพิ่มการเปลี่ยนสี */
+                width: 100%;
+                /* กำหนดความกว้างเต็มที่ */
+                cursor: pointer;
+                /* เปลี่ยน cursor เมื่อ hover */
+            }
+
+            .tablinks:hover {
+                background-color: #0056b3;
+                /* เปลี่ยนสีเมื่อเอาเมาส์ไปวาง */
+            }
+
+            .tabcontent {
+                display: none;
+                /* ซ่อนเนื้อหาของแท็บเริ่มต้น */
+            }
+
+            .active {
+                display: block;
+                /* แสดงเนื้อหาของแท็บที่ถูกเลือก */
+            }
+        </style>
+
+        <body>
+            <div class="container mt-2">
+                <div class="header mb-3">
+                    <button id="create-config" class="btn btn-primary" onclick="toggleCreateForm()">+ Create
+                        Configuration</button>
+                    <div class="dropdown d-inline-block float-end">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            + Open Tab
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <input type="text" id="tabSearchDropdown" onkeyup="filterDropdown()"
+                                    placeholder="Search tabs..." class="dropdown-item" style="width: 100%;" />
+                            </li>
+                            <% configs.forEach((config)=> { %>
+                                <li class="tab-item" id="dropdown-item-Config<%= config.id %>">
+                                    <a class="dropdown-item" href="#" onclick="selectTab('Config<%= config.id %>')">
+                                        <%= config.action_name %>
+                                    </a>
+                                </li>
+                                <% }) %>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="createForm" class="mb-3" style="display: none;">
+                    <h3>Add New Configuration</h3>
+                    <form action="/config/add" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="action_name" class="form-label">Auction Name:</label>
+                            <input type="text" id="action_name" name="action_name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="url" class="form-label">URL (without http/https):</label>
+                            <input type="text" id="url" name="url" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="scrape_file" class="form-label">Scrape File Name (.js):</label>
+                            <input type="text" id="scrape_file" name="scrape_file" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="scrape_code" class="form-label">Scrape Code:</label>
+                            <textarea id="scrape_code" name="scrape_code" class="form-control" rows="10"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="load_code" class="form-label">LoadFile Code:</label>
+                            <textarea id="load_code" name="load_code" class="form-control" rows="10"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="DB_code" class="form-label">LoadFile Code:</label>
+                            <textarea id="DB_code" name="DB_code" class="form-control" rows="10"
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </form>
+                </div>
+
+                <div class="row">
+                    <!-- Sidebar for Tabs -->
+                    <div class="col-md-2">
+                        <div class="list-group">
+                            <% configs.forEach((config) => { %>
+                                <button class="list-group-item list-group-item-action tablinks mb-3"  onclick="selectTab('Config<%= config.id %>')">
+                                    <%= config.action_name %>
+                                </button>
+                            <% }) %>
+                        </div>
+                    </div>
+                
+                    <!-- Content for Configuration Forms -->
+                    <div class="col-md-10">
+                        <% configs.forEach((config) => { %>
+                            <div class="tabcontent card shadow-sm p-4 mb-4" id="Config<%= config.id %>">
+                                <h3 class="mb-4 text-primary">Edit Configuration: <%= config.action_name %></h3>
+                                <form action="/config/update/<%= config.id %>" method="post">
+                                    <div class="mb-3">
+                                        <label class="form-label">Auction Name:</label>
+                                        <input type="text" name="u_action_name" class="form-control" value="<%= config.action_name %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">URL (without http/https):</label>
+                                        <input type="text" name="u_url" class="form-control" value="<%= config.url %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Scrape File Name (.js):</label>
+                                        <input type="text" name="u_scrape_file" class="form-control" value="<%= config.file_scrape.replace('.js', '') %>" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Scrape Code:</label>
+                                        <textarea name="u_scrape_code" class="form-control" rows="5"><%= getScrapeCode(config.file_scrape) %></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">LoadFile Code:</label>
+                                        <textarea name="u_load_code" class="form-control" rows="5"><%= getloadCode(config.file_loadimg) %></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">LoadFile Code:</label>
+                                        <textarea name="u_db_code" class="form-control" rows="5"><%= getdbCode(config.file_insertdb) %></textarea>
+                                    </div>
+                
+                                </form>
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Update</button>
+                                    <form action="/config/delete/<%= config.id %>" method="post" onsubmit="return confirm('Are you sure you want to delete this configuration?');">
+                                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+                
+
+            </div>
+
+            <script>
+                function toggleCreateForm() {
+                    var form = document.getElementById("createForm");
+                    if (form.style.display === "none" || form.style.display === "") {
+                        form.style.display = "block";
+                    } else {
+                        form.style.display = "none";
+                    }
+                }
+
+                function selectTab(tabName) {
+                    // Hide all tab contents
+                    var tabs = document.querySelectorAll('.tabcontent');
+                    tabs.forEach(tab => {
+                        tab.classList.remove('active'); // ซ่อนทุกแท็บ
+                    });
+
+                    // Show the selected tab content
+                    document.getElementById(tabName).classList.add('active'); // แสดงแท็บที่เลือก
+                }
+
+                function filterDropdown() {
+                    var input = document.getElementById("tabSearchDropdown");
+                    var filter = input.value.toLowerCase();
+                    var dropdownItems = document.querySelectorAll('.dropdown-item');
+
+                    dropdownItems.forEach(function (item) {
+                        var text = item.innerText.toLowerCase();
+                        item.style.display = text.includes(filter) ? "" : "none";
+                    });
+                }
+            </script>
+
+            <!-- jsvectormap -->
+            <script src="/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+            <script src="/assets/libs/jsvectormap/js/jsvectormap.world.js"></script>
+
+            <!-- Swiper slider -->
+            <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
+            <%- contentFor('FooterJs') %>

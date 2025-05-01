@@ -1,0 +1,9 @@
+{
+    "t_dashboards": "Dashboard",
+    "t_config": "Config",
+    "t_schedule": "Schedule",
+    "t_status": "Status",
+    "t_load_image": "Load Image",
+    "t_db_upload": "DB Upload",
+    "t_downloads_directory": "Directory Management"
+}

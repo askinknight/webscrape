@@ -1,0 +1,188 @@
+<%- contentFor('HeaderCss') %>
+    <link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+
+    <%- contentFor('body') %>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <style>
+            .image-preview {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+
+            .breadcrumb-nav {
+                margin-bottom: 20px;
+            }
+
+            .card-header {
+                position: relative;
+                height: 30px;
+            }
+
+            .checkbox-top-left {
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin: 5px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+        </head>
+
+        <body>
+            <div class="container my-4">
+                <!-- Breadcrumb Navigation -->
+                <div id="breadcrumb-nav" class="breadcrumb-nav"></div>
+
+                <!-- Table for displaying CSV files -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Status</th>
+                            <th>Img Count</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% folders.forEach(folder=> { %>
+
+                            <tr>
+                                <td>
+                                    <%= folder.name %>
+                                </td>
+                                <% if (folder.path.toLowerCase().endsWith('.csv')) { %>
+                                    <td class="status-cell" id="status-<%= folder.name %>"></td>
+                                    <td id="img-<%= folder.name %>"></td>
+                                    <td>
+                                        <button id="scrape-btn-<%= folder.name %>" class="btn btn-outline-info"
+                                            onclick="loadFile('<%= folder.path %>', this)">Load image</button>
+                                    <td>
+                                        <% } else { %>
+                                    <td class="status-cell">✅ Done</td>
+                                    <td> check in folder </td>
+                                    <td>
+                                        <a class="btn btn-outline-info" href="../downloads/<%= folder.path %>">To
+                                            folder</a>
+                                    </td>
+                                    <% } %>
+
+                            </tr>
+
+                            <% }); %>
+                    </tbody>
+                </table>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        function loadStatuses() {
+                            fetch('/load-image-status.json')
+                                .then(response => response.json())
+                                .then(statusData => {
+                                    statusData['<%= title %>'].forEach(status => {
+                                        const statusCell = document.getElementById(`status-${status.name}`);
+                                        const imgCell = document.getElementById(`img-${status.name}`);
+                                        const scrapeBtn = document.getElementById(`scrape-btn-${status.name}`);
+                                        if (statusCell && scrapeBtn && imgCell) {
+                                            if (status.status === 'onprocess') {
+                                                statusCell.innerHTML = '⏳ Processing...';
+                                                scrapeBtn.disabled = true;
+                                                scrapeBtn.innerHTML = '⏳ Processing...';
+                                            } else if (status.status === 'done') {
+                                                statusCell.innerHTML = '✅ Done';
+                                                scrapeBtn.disabled = false;
+                                                scrapeBtn.innerHTML = 'Load image';
+                                            } else {
+                                                statusCell.innerHTML = status.status;
+                                                scrapeBtn.disabled = false;
+                                                scrapeBtn.innerHTML = 'Load image';
+                                            }
+                                            imgCell.innerHTML = status.num_img;
+                                        } else {
+                                            console.warn(`Status cell or button not found for name: ${status.name}`);
+                                        }
+                                    });
+                                })
+                                .catch(error => console.error('Error fetching status:', error));
+                        }
+
+                        loadStatuses();
+                        setInterval(loadStatuses, 1000);
+                    });
+
+                    function loadFile(filePath, buttonElement) {
+                        const pathParts = filePath.split('/');
+                        const actionName = pathParts[0];
+                        const fileName = pathParts[1];
+
+                        fetch(`/load-image/${actionName}/${fileName}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ path: filePath })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                const statusCell = buttonElement.closest('tr').querySelector('.status-cell');
+                                if (data.success) {
+                                    statusCell.textContent = 'Loaded Successfully';
+                                    alert('File loaded successfully!');
+                                } else {
+                                    statusCell.textContent = 'Failed to load';
+                                    alert('Failed to load the file: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                const statusCell = buttonElement.closest('tr').querySelector('.status-cell');
+                                statusCell.textContent = 'Error';
+                                console.error('Error:', error);
+                            });
+                    }
+
+                    function createBreadcrumb() {
+                        const breadcrumbNav = document.getElementById('breadcrumb-nav');
+                        const pathParts = window.location.pathname.split('/').filter(part => part);
+
+                        let fullPath = '/load-image';
+                        breadcrumbNav.innerHTML = '';
+
+                        const downloadsButton = document.createElement('a');
+                        downloadsButton.href = '/load-image';
+                        downloadsButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+                        downloadsButton.textContent = 'load-image';
+                        breadcrumbNav.appendChild(downloadsButton);
+
+                        pathParts.slice(1).forEach(part => {
+                            fullPath += `/${part}`;
+                            breadcrumbNav.innerHTML += ' / ';
+                            const folderButton = document.createElement('a');
+                            folderButton.href = fullPath;
+                            folderButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+                            folderButton.textContent = decodeURIComponent(part);
+                            breadcrumbNav.appendChild(folderButton);
+                        });
+                    }
+
+                    window.onload = createBreadcrumb;
+                </script>
+            </div>
+        </body>
+        <%- contentFor('FooterJs') %>

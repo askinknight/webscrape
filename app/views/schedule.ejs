@@ -1,0 +1,416 @@
+<%- contentFor('HeaderCss') %>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <%- contentFor('body') %>
+
+    <style>
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            font-size: 1.5rem;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+
+        .table-hover tbody tr:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transition: 0.2s ease-in-out;
+        }
+
+        .btn {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+    </style>
+    
+        <div class="card shadow-sm mt-3">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Scrape Configurations</h3>
+            </div>
+            <div class="card-body">
+                <form id="scrapeForm">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr>
+                                <th>Action Name</th>
+                                <th>URL</th>
+                                <th>Status</th> 
+                                <th>row</th> 
+                                <th>Last Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% configs.forEach(config => { %>
+                                <tr id="row-<%= config.action_name %>">
+                                    <td><%= config.action_name %></td>
+                                    <td><%= config.url %></td>
+                                    <td class="status-cell" id="status-<%= config.action_name %>"></td>
+                                    <td id="num-<%= config.action_name %>"></td>
+                                    <td id="time-<%= config.action_name %>"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-sm" id="scrape-btn-<%= config.action_name %>"
+                                            onclick="scrapeNOW('<%= config.action_name %>')">Scrape Now</button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    
+    
+    
+    
+        <br>
+        <div class="card shadow-sm ">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Add schedule</h3>
+            </div>
+        
+            <div class="card-body">
+                <div class="row">
+                    <!-- Left Section: Add Schedule Form -->
+                    <div class="col-lg-4">
+                        <form id="addScheduleForm" action="/schedule/add-schedule" method="POST" class="bg-light p-4 rounded shadow-sm">
+                            <div class="form-group mb-3">
+                                <label for="auction_name_select">Select Auction</label>
+                                <select name="auction_name_select" id="auction_name_select" class="form-control form-select" required>
+                                    <% configs.forEach(config => { %>
+                                        <option value="<%= config.action_name %>">
+                                            <%= config.action_name %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+        
+                            <div class="form-group mb-3">
+                                <label for="date">Select Date</label>
+                                <input type="date" name="date" id="date" class="form-control" required>
+                            </div>
+        
+                            <div class="form-group mb-3">
+                                <label for="time">Select Time</label>
+                                <input type="time" name="time" id="time" class="form-control" required>
+                            </div>
+        
+                            <button type="submit" class="btn btn-primary btn-block mt-3">Schedule Alert</button>
+                        </form>
+                    </div>
+        
+                    <!-- Right Section: Calendar -->
+                    <div class="col-lg-8">
+                        <div id="calendar" class="border p-3 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal for Editing Event -->
+        <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="eventModalLabel">Edit Event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="auction_name_update">Auction:</label>
+                            <select name="auction_name_update" id="auction_name_update" class="form-control form-select" required>
+                                <% configs.forEach(config => { %>
+                                    <option value="<%= config.action_name %>">
+                                        <%= config.action_name %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+        
+                        <div class="form-group mb-3">
+                            <label for="eventDate">Date:</label>
+                            <input type="date" id="eventDate" class="form-control" required>
+                        </div>
+        
+                        <div class="form-group mb-3">
+                            <label for="eventTime">Time:</label>
+                            <input type="time" id="eventTime" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="saveEvent" class="btn btn-success">Save</button>
+                        <button id="deleteEvent" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <script>
+
+            function scrapeNOW(actionName) {
+                fetch('/schedule/scrape', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ actionNames: [actionName] })
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                function loadStatuses() {
+                    fetch('/status.json')
+                        .then(response => response.json())
+                        .then(statusData => {
+                            statusData.forEach(status => {
+                                const statusCell = document.getElementById(`status-${status.action_name}`);
+                                const lasttime = document.getElementById(`time-${status.action_name}`);
+                                const scrapeBtn = document.getElementById(`scrape-btn-${status.action_name}`);
+                                const Statusrow = document.getElementById(`num-${status.action_name}`);
+
+                                if (statusCell && lasttime && scrapeBtn) {
+                                    // อัปเดตเวลาการรันล่าสุด
+                                    lasttime.innerText = status.datetime || 'N/A';
+                                    Statusrow.innerText = status.num_row || '0';
+
+                                    // กำหนดสีและเนื้อหาของ Badge
+                                    let badgeClass = "badge rounded-pill bg-secondary "; // Default badge
+                                    let badgeText = "Unactive";
+
+                                    if (status.status === 'onprocess') {
+                                        badgeClass = "badge rounded-pill bg-primary-subtle text-primary";
+                                        badgeText = "⏳ Processing...";
+                                        scrapeBtn.disabled = true;
+                                        scrapeBtn.innerHTML = '⏳ Processing...';
+                                    } else if (status.status === 'success') {
+                                        badgeClass = "badge  rounded-pill bg-success-subtle text-success";
+                                        badgeText = "✅ Success";
+                                        scrapeBtn.disabled = false;
+                                        scrapeBtn.innerHTML = 'Scrape Now';
+                                    } else if (status.status === 'warn') {
+                                        badgeClass = "badge rounded-pill bg-warning-subtle text-warning";
+                                        badgeText = "⚠️ Warn";
+                                        scrapeBtn.disabled = false;
+                                        scrapeBtn.innerHTML = 'Scrape Now';
+                                    } else if (status.status === 'error') {
+                                        badgeClass = "badge rounded-pill bg-danger-subtle text-danger";
+                                        badgeText = "❌ Error";
+                                        scrapeBtn.disabled = false;
+                                        scrapeBtn.innerHTML = 'Scrape Now';
+                                    } else {
+                                        scrapeBtn.disabled = false;
+                                        scrapeBtn.innerHTML = 'Scrape Now';
+                                    }
+
+                                    // อัปเดต Status Cell ด้วย Badge
+                                    statusCell.innerHTML = `<span class="${badgeClass}">${badgeText}</span>`;
+                                } else {
+                                    console.warn(`Elements not found for action: ${status.action_name}`);
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Error fetching status:', error));
+                }
+
+
+                // Load statuses initially and set interval to update every second
+                loadStatuses();
+                setInterval(loadStatuses, 1000);
+
+                // Initialize FullCalendar
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                    },
+                    events: function (fetchInfo, successCallback, failureCallback) {
+                        $.ajax({
+                            url: '/schedule/get-scheduled-jobs',
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data && data.scheduledJobs) {
+                                    const events = data.scheduledJobs.map(job => ({
+                                        id: job.id,
+                                        title: job.auction_name,
+                                        start: job.dateTime,
+                                        allDay: false
+                                    }));
+                                    successCallback(events);
+                                } else {
+                                    console.error('Invalid data format:', data);
+                                    failureCallback('Invalid data format');
+                                }
+                            },
+                            error: function (error) {
+                                console.error('Error fetching events:', error);
+                                failureCallback(error);
+                            }
+                        });
+                    },
+                    eventDidMount: function (info) {
+                        const now = new Date();
+                        const eventStart = new Date(info.event.start);
+
+                        if (eventStart > now) {
+                            // เปลี่ยนสีเป็นสีเทาสำหรับ event ในอนาคต
+                            info.el.style.backgroundColor = 'gray';
+                        } else {
+                            // เปลี่ยนสีเป็นสีฟ้าสำหรับ event ในอดีตหรือปัจจุบัน
+                            info.el.style.backgroundColor = 'blue';
+                        }
+                    },
+                    eventClick: function (info) {
+                        currentEvent = info.event;
+
+                        document.getElementById('auction_name_update').value = info.event.title;
+
+                        const localDateTime = new Date(info.event.start);
+                        const localDate = formatDateToDDMMYYYY(localDateTime);
+                        const localTime = localDateTime.toTimeString().slice(0, 5);
+
+                        document.getElementById('eventDate').value = localDate;
+                        document.getElementById('eventTime').value = localTime;
+
+                        $('#eventModal').modal('show');
+                    }
+                });
+
+                calendar.render();
+
+
+                // Initialize Flatpickr for date and time
+                flatpickr("#date", {
+                    dateFormat: "Y-m-d",
+                    onOpen: function () {
+                        const now = new Date();
+                        this.setDate(now);
+                    }
+                });
+
+                flatpickr("#time", {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true,
+                    onOpen: function () {
+                        const now = new Date();
+                        this.setDate(now);
+                    }
+                });
+
+                flatpickr("#eventDate", {
+                    dateFormat: "Y-m-d"
+                });
+
+                flatpickr("#eventTime", {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true
+                });
+
+                document.getElementById('addScheduleForm').addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    const auctionName = document.getElementById('auction_name_select').value;
+                    const date = document.getElementById('date').value;
+                    const time = document.getElementById('time').value;
+
+                    const data = {
+                        auction_name_select: auctionName,
+                        date: date,
+                        time: time
+                    };
+
+                    fetch('/schedule/add-schedule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    }).then(response => {
+                        if (response.ok) {
+                            calendar.refetchEvents();
+                            $('#addScheduleForm')[0].reset(); // Reset the form after submission
+                        } else {
+                            console.error('Error scheduling:', response);
+                        }
+                    }).catch(error => console.error('Fetch error:', error));
+                });
+
+                document.getElementById('saveEvent').addEventListener('click', function () {
+                    const updatedMessage = document.getElementById('auction_name_update').value;
+                    const updatedDate = document.getElementById('eventDate').value;
+                    const updatedTime = document.getElementById('eventTime').value;
+                    const updatedDateTime = `${updatedDate}T${updatedTime}`;
+
+                    // อัปเดตอีเวนต์ใน FullCalendar
+                    currentEvent.setProp('title', updatedMessage);
+                    currentEvent.setStart(updatedDateTime);
+
+                    // ส่งข้อมูลไปยังเซิร์ฟเวอร์
+                    $.ajax({
+                        url: `/schedule/update-event/${currentEvent.id}`,
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            auction_name_update: updatedMessage,
+                            dateTime: updatedDateTime
+                        }),
+                        success: function () {
+                            alert('Event updated successfully!');
+                            $('#eventModal').modal('hide');
+                        },
+                        error: function (error) {
+                            console.error('Error updating event:', error);
+                        }
+                    });
+                });
+
+                document.getElementById('deleteEvent').addEventListener('click', function () {
+                    currentEvent.remove();
+
+                    $.ajax({
+                        url: `/schedule/delete-event/${currentEvent.id}`,
+                        method: 'POST',
+                        success: function () {
+                            alert('Event deleted successfully!');
+                            $('#eventModal').modal('hide');
+                        },
+                        error: function (error) {
+                            console.error('Error deleting event:', error);
+                        }
+                    });
+                });
+            });
+
+            function formatDateToDDMMYYYY(date) {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`;
+            }
+        </script>
+        <%- contentFor('FooterJs') %>

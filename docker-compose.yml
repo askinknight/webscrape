@@ -1,0 +1,47 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "8081:8081"
+    volumes:
+      - .:/app
+      - ./uploads:/app/uploads
+      - ./public/downloads:/app/public/downloads
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=rootpassword
+      - MYSQL_DATABASE=scrape_configs
+      - TZ=Asia/Bangkok  # ตั้งค่า Time Zone
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "8082:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: scrape_configs
+      TZ: Asia/Bangkok
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/mysql
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8084:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+      PMA_AUTH_TYPE: cookie
+    restart: always
+
+volumes:
+  db_data:

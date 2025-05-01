@@ -1,0 +1,9 @@
+{
+    "t_dashboards": "Tableau de bord",
+    "t_config": "Configuration",
+    "t_schedule": "Calendrier",
+    "t_status": "Statut",
+    "t_load_image": "Charger l'image",
+    "t_db_upload": "Télécharger la base de données",
+    "t_downloads_directory": "Répertoire des téléchargements"
+}

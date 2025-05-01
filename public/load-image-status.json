@@ -1,0 +1,97 @@
+{
+  "Inter_auction": [
+    {
+      "name": "Inter_auction-27_11_2024-10_11 copy.csv",
+      "status": "rest",
+      "num_img": 34
+    },
+    {
+      "name": "Inter_auction-27_11_2024-10_11.csv",
+      "status": "rest",
+      "num_img": 6507
+    }
+  ],
+  "Buy_at_Siam": [
+    {
+      "name": "Buy_at_Siam-21_11_2024-09_52.csv",
+      "status": "rest",
+      "num_img": 1966
+    },
+    {
+      "name": "Buy_at_Siam-21_11_2024-09_52 copy.csv",
+      "status": "rest",
+      "num_img": 2
+    },
+    {
+      "name": "Buy_at_Siam-21_11_2024-09_52 copy 4.csv",
+      "status": "rest",
+      "num_img": 16
+    },
+    {
+      "name": "Buy_at_Siam-21_11_2024-09_52 copy 8.csv",
+      "status": "done",
+      "num_img": 16
+    },
+    {
+      "name": "Buy_at_Siam-21_11_2024-09_52 copy 9.csv",
+      "status": "rest",
+      "num_img": 16
+    }
+  ],
+  "Apple_Auction": [
+    {
+      "name": "Apple_Auction-28_10_2024-13.29 copy.csv",
+      "status": "rest",
+      "num_img": 99
+    },
+    {
+      "name": "Apple_Auction-28_10_2024-13.29.csv",
+      "status": "rest",
+      "num_img": 14566
+    },
+    {
+      "name": "Apple_Auction-21_01_2025-11.28.csv",
+      "status": "rest",
+      "num_img": 45002
+    },
+    {
+      "name": "Apple_Auction-11_02_2025-10.51.csv",
+      "status": "rest",
+      "num_img": 46725
+    }
+  ],
+  "Motto_Auction": [
+    {
+      "name": "Motto_Auction-15_01_2025-14_55.csv",
+      "status": "done",
+      "num_img": 6
+    },
+    {
+      "name": "Motto_Auction_lane_2-28_10_2024-14_47.csv",
+      "status": "rest",
+      "num_img": 61
+    }
+  ],
+  "Auction_express": [],
+  "Sahakrane_Auction": [
+    {
+      "name": "Sahakrane_Auction-28_10_2024-13.31.csv",
+      "status": "rest",
+      "num_img": 10088
+    }
+  ],
+  "Premium_Inter_auction": [
+    {
+      "name": "Premium_Inter_auction-24_1_2025-14_43.csv",
+      "status": "rest",
+      "num_img": 1271
+    }
+  ],
+  "SiamInter_auction": [
+    {
+      "name": "SiamInter_auction-21_01_2568-11_25.csv",
+      "status": "rest",
+      "num_img": 2641
+    }
+  ]
+}

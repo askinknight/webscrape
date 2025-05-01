@@ -1,0 +1,1682 @@
+[
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Apple_Auction",
+    "value": 107
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Apple_Auction",
+    "value": 122
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Apple_Auction",
+    "value": 104
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Apple_Auction",
+    "value": 81
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Apple_Auction",
+    "value": 84
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Apple_Auction",
+    "value": 98
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Apple_Auction",
+    "value": 55
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Apple_Auction",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Apple_Auction",
+    "value": 63
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Apple_Auction",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Apple_Auction",
+    "value": 54
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Apple_Auction",
+    "value": 57
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Apple_Auction",
+    "value": 49
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Apple_Auction",
+    "value": 47
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Apple_Auction",
+    "value": 49
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Apple_Auction",
+    "value": 60
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Apple_Auction",
+    "value": 47
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Apple_Auction",
+    "value": 57
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Apple_Auction",
+    "value": 119
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Apple_Auction",
+    "value": 113
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Apple_Auction",
+    "value": 95
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Apple_Auction",
+    "value": 85
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Apple_Auction",
+    "value": 122
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Apple_Auction",
+    "value": 106
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Apple_Auction",
+    "value": 102
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Apple_Auction",
+    "value": 114
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Apple_Auction",
+    "value": 108
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Apple_Auction",
+    "value": 115
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Apple_Auction",
+    "value": 88
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Apple_Auction",
+    "value": 126
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Auction_express",
+    "value": 109
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Auction_express",
+    "value": 103
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Auction_express",
+    "value": 98
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Auction_express",
+    "value": 102
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Auction_express",
+    "value": 101
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Auction_express",
+    "value": 101
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Auction_express",
+    "value": 40
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Auction_express",
+    "value": 44
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Auction_express",
+    "value": 56
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Auction_express",
+    "value": 44
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Auction_express",
+    "value": 60
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Auction_express",
+    "value": 57
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Auction_express",
+    "value": 47
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Auction_express",
+    "value": 53
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Auction_express",
+    "value": 46
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Auction_express",
+    "value": 53
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Auction_express",
+    "value": 59
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Auction_express",
+    "value": 65
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Auction_express",
+    "value": 126
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Auction_express",
+    "value": 93
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Auction_express",
+    "value": 87
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Auction_express",
+    "value": 91
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Auction_express",
+    "value": 82
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Auction_express",
+    "value": 110
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Auction_express",
+    "value": 99
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Auction_express",
+    "value": 123
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Auction_express",
+    "value": 108
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Auction_express",
+    "value": 119
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Auction_express",
+    "value": 97
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Auction_express",
+    "value": 112
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Buy_at_Siam",
+    "value": 96
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Buy_at_Siam",
+    "value": 104
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Buy_at_Siam",
+    "value": 112
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Buy_at_Siam",
+    "value": 86
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Buy_at_Siam",
+    "value": 106
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Buy_at_Siam",
+    "value": 103
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Buy_at_Siam",
+    "value": 52
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Buy_at_Siam",
+    "value": 52
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Buy_at_Siam",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Buy_at_Siam",
+    "value": 40
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Buy_at_Siam",
+    "value": 62
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Buy_at_Siam",
+    "value": 47
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Buy_at_Siam",
+    "value": 58
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Buy_at_Siam",
+    "value": 51
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Buy_at_Siam",
+    "value": 41
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Buy_at_Siam",
+    "value": 53
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Buy_at_Siam",
+    "value": 52
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Buy_at_Siam",
+    "value": 58
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Buy_at_Siam",
+    "value": 102
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Buy_at_Siam",
+    "value": 104
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Buy_at_Siam",
+    "value": 104
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Buy_at_Siam",
+    "value": 98
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Buy_at_Siam",
+    "value": 88
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Buy_at_Siam",
+    "value": 101
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Buy_at_Siam",
+    "value": 100
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Buy_at_Siam",
+    "value": 107
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Buy_at_Siam",
+    "value": 99
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Buy_at_Siam",
+    "value": 112
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Buy_at_Siam",
+    "value": 108
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Buy_at_Siam",
+    "value": 97
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Inter_auction",
+    "value": 108
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Inter_auction",
+    "value": 89
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Inter_auction",
+    "value": 101
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Inter_auction",
+    "value": 100
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Inter_auction",
+    "value": 131
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Inter_auction",
+    "value": 105
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Inter_auction",
+    "value": 44
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Inter_auction",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Inter_auction",
+    "value": 47
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Inter_auction",
+    "value": 36
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Inter_auction",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Inter_auction",
+    "value": 46
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Inter_auction",
+    "value": 60
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Inter_auction",
+    "value": 63
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Inter_auction",
+    "value": 70
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Inter_auction",
+    "value": 56
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Inter_auction",
+    "value": 54
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Inter_auction",
+    "value": 45
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Inter_auction",
+    "value": 102
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Inter_auction",
+    "value": 111
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Inter_auction",
+    "value": 94
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Inter_auction",
+    "value": 113
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Inter_auction",
+    "value": 110
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Inter_auction",
+    "value": 112
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Inter_auction",
+    "value": 103
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Inter_auction",
+    "value": 103
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Inter_auction",
+    "value": 111
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Inter_auction",
+    "value": 113
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Inter_auction",
+    "value": 108
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Inter_auction",
+    "value": 99
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Motto_Auction",
+    "value": 125
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Motto_Auction",
+    "value": 87
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Motto_Auction",
+    "value": 102
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Motto_Auction",
+    "value": 98
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Motto_Auction",
+    "value": 100
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Motto_Auction",
+    "value": 111
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Motto_Auction",
+    "value": 66
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Motto_Auction",
+    "value": 32
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Motto_Auction",
+    "value": 58
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Motto_Auction",
+    "value": 49
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Motto_Auction",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Motto_Auction",
+    "value": 46
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Motto_Auction",
+    "value": 61
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Motto_Auction",
+    "value": 52
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Motto_Auction",
+    "value": 54
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Motto_Auction",
+    "value": 65
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Motto_Auction",
+    "value": 57
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Motto_Auction",
+    "value": 53
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Motto_Auction",
+    "value": 121
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Motto_Auction",
+    "value": 103
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Motto_Auction",
+    "value": 95
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Motto_Auction",
+    "value": 119
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Motto_Auction",
+    "value": 115
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Motto_Auction",
+    "value": 86
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Motto_Auction",
+    "value": 84
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Motto_Auction",
+    "value": 96
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Motto_Auction",
+    "value": 91
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Motto_Auction",
+    "value": 83
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Motto_Auction",
+    "value": 103
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Motto_Auction",
+    "value": 95
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Premium_Inter_auction",
+    "value": 131
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Premium_Inter_auction",
+    "value": 99
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Premium_Inter_auction",
+    "value": 108
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Premium_Inter_auction",
+    "value": 110
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Premium_Inter_auction",
+    "value": 110
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Premium_Inter_auction",
+    "value": 99
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Premium_Inter_auction",
+    "value": 53
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Premium_Inter_auction",
+    "value": 41
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Premium_Inter_auction",
+    "value": 60
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Premium_Inter_auction",
+    "value": 55
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Premium_Inter_auction",
+    "value": 61
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Premium_Inter_auction",
+    "value": 45
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Premium_Inter_auction",
+    "value": 57
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Premium_Inter_auction",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Premium_Inter_auction",
+    "value": 64
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Premium_Inter_auction",
+    "value": 43
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Premium_Inter_auction",
+    "value": 55
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Premium_Inter_auction",
+    "value": 60
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Premium_Inter_auction",
+    "value": 107
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Premium_Inter_auction",
+    "value": 98
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Premium_Inter_auction",
+    "value": 100
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Premium_Inter_auction",
+    "value": 111
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Premium_Inter_auction",
+    "value": 102
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Premium_Inter_auction",
+    "value": 96
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Premium_Inter_auction",
+    "value": 94
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Premium_Inter_auction",
+    "value": 122
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Premium_Inter_auction",
+    "value": 96
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Premium_Inter_auction",
+    "value": 108
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Premium_Inter_auction",
+    "value": 103
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Premium_Inter_auction",
+    "value": 101
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Sahakrane_Auction",
+    "value": 115
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Sahakrane_Auction",
+    "value": 90
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Sahakrane_Auction",
+    "value": 93
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Sahakrane_Auction",
+    "value": 114
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Sahakrane_Auction",
+    "value": 111
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Sahakrane_Auction",
+    "value": 120
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Sahakrane_Auction",
+    "value": 39
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Sahakrane_Auction",
+    "value": 49
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Sahakrane_Auction",
+    "value": 65
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Sahakrane_Auction",
+    "value": 52
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Sahakrane_Auction",
+    "value": 60
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Sahakrane_Auction",
+    "value": 42
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Sahakrane_Auction",
+    "value": 44
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Sahakrane_Auction",
+    "value": 60
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Sahakrane_Auction",
+    "value": 44
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Sahakrane_Auction",
+    "value": 54
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Sahakrane_Auction",
+    "value": 47
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Sahakrane_Auction",
+    "value": 57
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "Sahakrane_Auction",
+    "value": 121
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "Sahakrane_Auction",
+    "value": 97
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "Sahakrane_Auction",
+    "value": 104
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "Sahakrane_Auction",
+    "value": 113
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "Sahakrane_Auction",
+    "value": 107
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "Sahakrane_Auction",
+    "value": 103
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "Sahakrane_Auction",
+    "value": 107
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "Sahakrane_Auction",
+    "value": 111
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "Sahakrane_Auction",
+    "value": 96
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "Sahakrane_Auction",
+    "value": 116
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "Sahakrane_Auction",
+    "value": 98
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "Sahakrane_Auction",
+    "value": 107
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "SiamInter_auction",
+    "value": 117
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "SiamInter_auction",
+    "value": 94
+  },
+  {
+    "year": "2025",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "SiamInter_auction",
+    "value": 92
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "SiamInter_auction",
+    "value": 109
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "SiamInter_auction",
+    "value": 106
+  },
+  {
+    "year": "2025",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "SiamInter_auction",
+    "value": 108
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "SiamInter_auction",
+    "value": 45
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "SiamInter_auction",
+    "value": 52
+  },
+  {
+    "year": "2024",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "SiamInter_auction",
+    "value": 58
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "SiamInter_auction",
+    "value": 40
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "SiamInter_auction",
+    "value": 54
+  },
+  {
+    "year": "2024",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "SiamInter_auction",
+    "value": 48
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "SiamInter_auction",
+    "value": 62
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "SiamInter_auction",
+    "value": 60
+  },
+  {
+    "year": "2024",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "SiamInter_auction",
+    "value": 41
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "SiamInter_auction",
+    "value": 53
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "SiamInter_auction",
+    "value": 56
+  },
+  {
+    "year": "2024",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "SiamInter_auction",
+    "value": 46
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 1,
+    "action_name": "SiamInter_auction",
+    "value": 110
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 2,
+    "action_name": "SiamInter_auction",
+    "value": 98
+  },
+  {
+    "year": "2023",
+    "quarter": 1,
+    "month": 3,
+    "action_name": "SiamInter_auction",
+    "value": 103
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 4,
+    "action_name": "SiamInter_auction",
+    "value": 97
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 5,
+    "action_name": "SiamInter_auction",
+    "value": 108
+  },
+  {
+    "year": "2023",
+    "quarter": 2,
+    "month": 6,
+    "action_name": "SiamInter_auction",
+    "value": 99
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 7,
+    "action_name": "SiamInter_auction",
+    "value": 101
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 8,
+    "action_name": "SiamInter_auction",
+    "value": 128
+  },
+  {
+    "year": "2023",
+    "quarter": 3,
+    "month": 9,
+    "action_name": "SiamInter_auction",
+    "value": 95
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 10,
+    "action_name": "SiamInter_auction",
+    "value": 99
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 11,
+    "action_name": "SiamInter_auction",
+    "value": 100
+  },
+  {
+    "year": "2023",
+    "quarter": 4,
+    "month": 12,
+    "action_name": "SiamInter_auction",
+    "value": 114
+  }
+]

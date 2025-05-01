@@ -1,0 +1,9 @@
+{
+    "t_dashboards": "Cruscotto",
+    "t_config": "Configurazione",
+    "t_schedule": "Pianificazione",
+    "t_status": "Stato",
+    "t_load_image": "Carica immagine",
+    "t_db_upload": "Carica database",
+    "t_downloads_directory": "Directory dei download"
+}

@@ -1,0 +1,114 @@
+<%- contentFor('HeaderCss') %>
+<!-- jsvectormap css -->
+<link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Swiper slider css -->
+<link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+<%- contentFor('body') %>
+<style>
+    .status-indicator {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    #folder-list .folder-item {
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 5px;
+        padding: 5px;
+        position: relative; /* Set relative position for delete icon */
+    }
+
+    #folder-list .btn {
+        padding: 4px 10px;
+        font-size: 0.875rem;
+    }
+
+    .delete-icon {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 20;
+    }
+</style>
+</head>
+
+<body>
+    <div id="breadcrumb-nav" class="breadcrumb-nav"></div>
+    <div class="container my-4">
+        <div class="list-group" id="folder-list">
+            <% folders.forEach(folder => { %>
+                <div class="d-flex justify-content-between align-items-center folder-item p-2" id="folder-<%= folder.name %>">
+                    <a href="/downloads/<%= folder.path %>" class="list-group-item list-group-item-action flex-grow-1">
+                        <%= folder.isDirectory ? '📁 ' : '' %>
+                        <%= folder.name %>
+                    </a>
+                    <button class="btn btn-link delete-icon" onclick="deleteItem('<%= folder.path %>')" title="Delete">
+                        <i class="bx bxs-trash"></i>
+                    </button>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/6.5.95/css/materialdesignicons.min.css"> <!-- Include Material Design Icons -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // JavaScript to dynamically create the breadcrumb based on window location
+        function createBreadcrumb() {
+            const breadcrumbNav = document.getElementById('breadcrumb-nav');
+            const pathParts = window.location.pathname.split('/').filter(part => part); // Split and remove empty parts
+
+            let fullPath = '/downloads';
+            breadcrumbNav.innerHTML = ''; // Clear existing breadcrumb
+
+            // Add 'downloads' as the base
+            const downloadsButton = document.createElement('a');
+            downloadsButton.href = '/downloads';
+            downloadsButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+            downloadsButton.textContent = 'downloads';
+            breadcrumbNav.appendChild(downloadsButton);
+
+            // Loop through each part of the path after 'downloads'
+            pathParts.slice(1).forEach((part, index) => {
+                fullPath += `/${part}`;
+
+                // Add separator (slash) before each subsequent part
+                breadcrumbNav.innerHTML += ' / ';
+
+                // Create a button for each folder in the path
+                const folderButton = document.createElement('a');
+                folderButton.href = fullPath;
+                folderButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+
+                // Decode the URL-encoded part before displaying
+                folderButton.textContent = decodeURIComponent(part);
+                breadcrumbNav.appendChild(folderButton);
+            });
+        };
+
+        // Function to delete a single item
+        function deleteItem(filePath) {
+            if (confirm('Are you sure you want to delete ' + filePath + '?')) {
+                // Use fetch to send delete request
+                fetch(`/downloads/delete?path=${encodeURIComponent(filePath)}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Item deleted successfully!'); // Alert on successful deletion
+                            window.location.reload(); // Reload the page to update the list
+                        } else {
+                            alert('Failed to delete the item: ' + data.message); // Alert on failure
+                        }
+                    });
+            }
+        }
+
+        // Call the function to build the breadcrumb when the page loads
+        window.onload = createBreadcrumb;
+    </script>
+</body>
+<%- contentFor('FooterJs') %>

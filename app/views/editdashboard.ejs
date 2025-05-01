@@ -1,0 +1,633 @@
+<%- contentFor('HeaderCss') %>
+    <!-- ✅ DataTables & Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+
+    <!-- ✅ jQuery (สำคัญ) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- ✅ Moment.js (จำเป็นสำหรับ Date Range Picker) -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+    <!-- ✅ Date Range Picker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <!-- ✅ DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <!-- ✅ DataTables Buttons (ทำให้ปุ่ม Export ใช้งานได้) -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <style>
+        #main-container {
+            display: flex;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #table-container {
+            width: 100%;
+        }
+
+        #preview-container {
+            display: none;
+        }
+
+        .show-preview #table-container {
+            width: 50%;
+        }
+
+        .show-preview #preview-container {
+            width: 50%;
+            display: block !important;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+    </style>
+
+    <%- contentFor('body') %>
+
+
+        <!-- ฟอร์มกรอง -->
+        <div class="card">
+            <div class="card-header p-3 ">
+                <h4>จัดการข้อมูล Dashboard</h4>
+            </div>
+            <div class="card-body">
+                <form id="filter-form" method="POST" action="/filter">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="daterange" class="form-label">เลือกช่วงวันที่</label>
+                            <div class="input-group">
+                                <input type="text" name="daterange" id="daterange" class="form-control"
+                                    placeholder="Select date range" data-provider="flatpickr" data-date-format="d M, Y"
+                                    data-range-date="true">
+                                <button type="button" id="clearDate" class="btn btn-outline-secondary">Clear</button>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Initialize flatpickr for the date range input field
+                                const fp = flatpickr("#daterange", {
+                                    mode: "range",
+                                    dateFormat: "Y-m-d", // รูปแบบวันที่เป็น YYYY-MM-DD
+                                    onChange: function (selectedDates, dateStr, instance) {
+                                        if (selectedDates.length === 2) {
+                                            // เพิ่ม 1 วันให้กับแต่ละวันที่เลือก
+                                            let startDate = new Date(selectedDates[0].getTime() + 86400000);
+                                            let endDate = new Date(selectedDates[1].getTime() + 86400000);
+
+                                            // ตั้งค่าค่าที่แสดงใน input
+                                            instance.input.value = startDate.toISOString().split('T')[0] + ' - ' + endDate.toISOString().split('T')[0];
+                                        }
+                                    }
+                                });
+
+
+                                // เรียกแสดงข้อมูลทั้งหมดตอนโหลดหน้าเว็บ
+                                applyFilters();
+
+                                // Clear date functionality
+                                document.getElementById('clearDate').addEventListener('click', function () {
+                                    fp.clear(); // Clear flatpickr selection
+                                    document.getElementById('daterange').value = ''; // Clear input field
+                                    applyFilters(); // แสดงข้อมูลทั้งหมดเมื่อกด Clear
+                                });
+                            });
+
+                            function applyFilters() {
+                                let dateValue = document.getElementById('daterange').value;
+                                if (!dateValue) {
+                                    console.log("Showing all data (no date filter)");
+                                    // ใส่โค้ดเพื่อโหลดข้อมูลทั้งหมดที่นี่
+                                } else {
+                                    console.log("Filtering data based on selected date range:", dateValue);
+                                    // ใส่โค้ดกรองข้อมูลตามวันที่ที่เลือก
+                                }
+                            }
+                        </script>
+
+
+                        <div class="col-md-6 mb-2">
+                            <label for="auction_name" class="form-label">เลือก Auction Name</label>
+                            <select name="auction_name" class="form-select">
+                                <option value="">-- Select Auction --</option>
+                                <% auctionData.companies.forEach(row=> { %>
+                                    <option value="<%= row.Company %>">
+                                        <%= row.Company %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="brand" class="form-label">เลือก Brand</label>
+                            <select name="brand" class="form-select">
+                                <option value="">-- Select Brand --</option>
+                                <% auctionData.brands.forEach(row=> { %>
+                                    <option value="<%= row.Brand %>">
+                                        <%= row.Brand %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="gear" class="form-label">เลือก Gear</label>
+                            <select name="gear" class="form-select">
+                                <option value="">-- Select Gear --</option>
+                                <% auctionData.gears.forEach(row=> { %>
+                                    <option value="<%= row.Gear %>">
+                                        <%= row.Gear %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="car_type" class="form-label">เลือก Car Type</label>
+                            <select name="car_type" class="form-select">
+                                <option value="">-- Select Car Type --</option>
+                                <% auctionData.categories.forEach(row=> { %>
+                                    <option value="<%= row.Category %>">
+                                        <%= row.Category %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="seller_name" class="form-label">เลือก Seller Name</label>
+                            <select name="seller_name" class="form-select">
+                                <option value="">-- Select Seller --</option>
+                                <% auctionData.sellers.forEach(row=> { %>
+                                    <option value="<%= row.Seller_name %>">
+                                        <%= row.Seller_name %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="province" class="form-label">เลือก Province</label>
+                            <select name="province" class="form-select">
+                                <option value="">-- Select Province --</option>
+                                <% auctionData.provinces.forEach(row=> { %>
+                                    <option value="<%= row.Reg_Province %>">
+                                        <%= row.Reg_Province %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mt-4 pt-1">
+                            <button type="submit" class="btn btn-primary w-50">กรองข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div id="main-container" class="d-flex">
+            <!-- คอลัมน์ซ้าย: ตาราง -->
+            <div id="table-container" class="flex-grow-1">
+                <!-- ตารางจะถูกเพิ่มที่นี่โดย DataTable -->
+            </div>
+
+            <!-- คอลัมน์ขวา: พื้นที่แสดงไฟล์ Download -->
+            <div id="preview-container">
+                <div class="preview-header">
+                    <button onclick="closePreview()" class="btn btn-danger">Close</button>
+                </div>
+                <iframe id="previewFrame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+        </div>
+
+        <script>
+            const form = document.getElementById("filter-form");
+            const resultTable = document.querySelector("#table-container");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault(); // Prevent form submission
+
+                const formData = new FormData(form);
+                const daterange = formData.get("daterange");
+                const auctionName = formData.get("auction_name");
+                const brand = formData.get("brand");
+                const gear = formData.get("gear");
+                const carType = formData.get("car_type");
+                const sellerName = formData.get("seller_name");
+                const province = formData.get("province");
+
+                // Destroy the existing DataTable if any
+                if ($.fn.dataTable.isDataTable('#result-table')) {
+                    $('#result-table').DataTable().clear().destroy();
+                }
+
+                // Create a new table
+                const table = document.createElement('table');
+                table.id = "result-table";
+                table.classList.add('display');
+                resultTable.appendChild(table);
+
+                // Initialize DataTable with server-side processing
+                $(document).ready(function () {
+                    $('#result-table').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        scrollX: true,  // เปิดการเลื่อนแนวนอน
+                        responsive: true,  // ทำให้ตารางปรับขนาดอัตโนมัติ
+                        searching: true,  // เปิดการค้นหา
+                        ordering: true,  // เปิดการเรียงลำดับ
+                        lengthMenu: [10, 25, 50, 100],  // กำหนดจำนวนแถวที่เลือกแสดงผล
+                        language: {
+                            info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                            infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
+                            search: "🔍 ค้นหา:",
+                            lengthMenu: "แสดง _MENU_ รายการ",
+                        },
+                        ajax: {
+                            url: "/edit/filter",
+                            method: "POST",
+                            data: function (d) {
+                                d.daterange = daterange;
+                                d.auction_name = auctionName;
+                                d.brand = brand;
+                                d.gear = gear;
+                                d.car_type = carType;
+                                d.seller_name = sellerName;
+                                d.province = province;
+                                d.search = $('#result-table_filter input').val();
+                                d.order = d.order;
+                                d.columns = d.columns;
+                            },
+                            dataSrc: function (json) {
+                                return json.data;
+                            }
+                        },
+                        columnDefs: [
+                            { targets: [2], orderable: false }
+                        ],
+                        columns: [
+                            {
+                                title: "Actions",
+                                data: "id",
+                                render: function (data, type, row) {
+                                    return `
+                <button type="button" class="btn btn-link d-inline-flex align-items-center" title="Edit" onclick="editRow(this, '${row.id}')">
+                    <i class="ri-pencil-line me-1"></i> Save
+                </button>
+                <button type="button" class="btn btn-link d-inline-flex align-items-center" onclick="confirmDelete('${row.id}')" title="Delete">
+                    <i class="ri-delete-bin-line me-1"></i> Delete
+                </button>
+            `;
+                                }
+                            },
+                            { title: "Company", data: "Company" },
+                            {
+                                title: "Image URL",
+                                data: "imageUrl",
+                                render: function (data) {
+                                    return data.split('|').map(url => {
+                                        let type = url.includes('/pdf/') ? "PDF" : "Image";
+                                        let icon = url.includes('/pdf/') ? "ri-file-pdf-line" : "ri-image-line";
+                                        return `<a href="#" class="btn btn-link d-inline-flex align-items-center" onclick="openPreview('${url}', this); return false;">
+                        <i class="${icon} me-1"></i> ${type}
+                    </a>`;
+                                    }).join(' ');
+                                }
+                            },
+                            {
+                                title: "Seller Name",
+                                data: "Seller_name",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Seller_name" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Seller Code",
+                                data: "Seller_code",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Seller_code" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Auction Date",
+                                data: "Auction_date",
+                                render: function (data, type, row) {
+                                    return `<input type="date" name="Auction_date" value="${formatDateForCalendar(data)}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Auction Name",
+                                data: "Auction_name",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Auction_name" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Auction Location",
+                                data: "Auction_location",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Auction_location" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Auction Lane",
+                                data: "Auction_lane",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Auction_lane" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Remark 1",
+                                data: "Remark1",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Remark1" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Remark 2",
+                                data: "Remark2",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Remark2" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Order No",
+                                data: "Order_No",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Order_No" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Reserve Price",
+                                data: "Reserve_price",
+                                render: function (data, type, row) {
+                                    return `<input type="number" name="Reserve_price" value="${data ? data : 0.00}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Start Price",
+                                data: "Start_price",
+                                render: function (data, type, row) {
+                                    return `<input type="number" name="Start_price" value="${data ? data : 0.00}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Category",
+                                data: "Category",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Category" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Reg No",
+                                data: "Reg_No",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Reg_No" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Reg Province",
+                                data: "Reg_Province",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Reg_Province" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Brand",
+                                data: "Brand",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Brand" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Model",
+                                data: "Model",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Model" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Engine Displacement",
+                                data: 'Engine_displacement',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Engine_displacement" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Gear",
+                                data: 'Gear',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Gear" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Fuel",
+                                data: 'Fuel',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Fuel" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Color",
+                                data: 'Color',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Color" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Car man year",
+                                data: 'Car_man_year',
+                                render: function (data, type, row) {
+                                    return `<input type="number" name="Car_man_year" value="${data ? data : 0}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Car reg year",
+                                data: 'Car_reg_year',
+                                render: function (data, type, row) {
+                                    return `<input type="number" name="Car_reg_year" value="${data ? data : 0}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Mile",
+                                data: 'Mile',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Mile" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Engine No",
+                                data: 'Engine_No',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Engine_No" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Chassis No",
+                                data: 'Chassis_No',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Chassis_No" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Grade Overall",
+                                data: 'Grade_overall',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Grade_overall" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Grade Frame",
+                                data: 'Grade_frame',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Grade_frame" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Grade Internal",
+                                data: 'Grade_Internal',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Grade_Internal" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Sourcing Type",
+                                data: 'Sourcing_type',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Sourcing_type" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Car Tax Expired Date",
+                                data: 'Car_tax_expired_date',
+                                render: function (data, type, row) {
+                                    return `<input type="date" name="Car_tax_expired_date" value="${data ? formatDateForCalendar(data) : null}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Car Title Group",
+                                data: 'Car_title_group',
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Car_title_group" value="${data}" data-id="${row.id}">`;
+                                }
+                            }
+                        ],
+                    });
+                });
+            });
+        </script>
+        <script>
+
+            // ฟังก์ชันแก้ไขข้อมูล
+            function editRow(button, rowId) {
+                const row = button.closest('tr');
+                const formData = {};
+
+                // ดึงค่าจาก input ในแถวนี้
+                row.querySelectorAll('input').forEach(input => {
+                    formData[input.name] = input.value;
+                });
+
+                fetch("/edit/update", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: rowId, ...formData }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert("Updated successfully!");
+                        // อัปเดตข้อมูลในแถว
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            // ฟังก์ชันลบข้อมูล
+            function confirmDelete(rowId) {
+                const confirmDelete = confirm("คุณต้องการลบข้อมูลนี้หรือไม่?");
+                var table = $('#result-table').DataTable();
+                var rowIndex = table.row(function (idx, data, node) {
+                    return data.id == rowId;
+                }).index();
+                if (confirmDelete) {
+                    fetch(`/edit/delete/${rowId}`, {
+                        method: "DELETE",
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert("Deleted successfully!");
+                            table.row(rowIndex).remove().draw();
+                        })
+                        .catch(error => console.error("Error:", error));
+                }
+            }
+
+            function formatDateForCalendar(utcDateString) {
+                // แปลงเป็นวันที่ในรูปแบบ Date object
+                const date = new Date(utcDateString) || utcDateString;
+                if (date === utcDateString) {
+                    return utcDateString
+                }
+
+                // ดึงส่วนต่าง ๆ ของวันที่
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+
+                // ส่งคืนวันที่ในรูปแบบ DD/MM/YYYY
+                return `${year}-${month}-${day}`;
+            }
+
+
+
+            function openPreview(fileUrl, link) {
+                document.getElementById('previewFrame').src = fileUrl;
+                // เปิดโหมด 2 คอลัมน์
+                document.getElementById('main-container').classList.add('show-preview');
+                // ไฮไลท์แถวที่ถูกกด
+                let row = link.closest('tr');
+                document.querySelectorAll("#result-table tbody tr").forEach(tr => tr.classList.remove('table-warning'));
+                row.classList.add('table-warning');
+            }
+
+            function closePreview() {
+                document.getElementById('main-container').classList.remove('show-preview');
+                // ลบไฮไลท์แถวที่ถูกกด
+                document.querySelectorAll("#result-table tbody tr").forEach(tr => tr.classList.remove('table-warning'));
+            }
+
+            function openPreview(fileUrl, link) {
+                document.getElementById('previewFrame').src = fileUrl;
+                // เปิดโหมด 2 คอลัมน์
+                document.getElementById('main-container').classList.add('show-preview');
+                // ไฮไลท์แถวที่ถูกกด
+                let row = link.closest('tr');
+                document.querySelectorAll("#result-table tbody tr").forEach(tr => tr.classList.remove('table-warning'));
+                row.classList.add('table-warning');
+            }
+
+            function closePreview() {
+                document.getElementById('main-container').classList.remove('show-preview');
+                // ลบไฮไลท์แถวที่ถูกกด
+                document.querySelectorAll("#result-table tbody tr").forEach(tr => tr.classList.remove('table-warning'));
+            }
+        </script>
+
+        <%- contentFor('FooterJs') %>

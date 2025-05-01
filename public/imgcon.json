@@ -1,0 +1,28 @@
+{
+    "Apple_Auction": {
+        "col": "Image URL"
+    },
+    "SiamInter_auction": {
+        "col": "NF_PRODUCT_PICTURE"
+    },
+    "Inter_auction": {
+        "col": "subImg"
+    }
+    ,
+    "Motto_Auction": {
+        "col": "imageUrl"
+    },
+    "Premium_Inter_auction": {
+        "col": "images"
+    }
+    ,
+    "Sahakrane_Auction": {
+        "col": "imgurl"
+    },
+    "Buy_at_Siam": {
+        "col": "รย."
+    },"Auction_express":{
+        "col": "Imagepath"
+    }
+
+}

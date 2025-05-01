@@ -1,0 +1,373 @@
+<%- contentFor('HeaderCss') %>
+
+    <!-- jsvectormap css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Swiper slider css -->
+    <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- JS สำหรับ daterangepicker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Moment.js (จำเป็นสำหรับ daterangepicker) -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+    <!-- JS สำหรับ daterangepicker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <%- contentFor('body') %>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
+
+        <style>
+            .card {
+                margin: 10px;
+            }
+
+            .border-success {
+                border-color: #28a745 !important;
+            }
+
+            .border-warning {
+                border-color: #ffc107 !important;
+            }
+
+            .border-danger {
+                border-color: #dc3545 !important;
+            }
+
+            .table {
+                font-size: clamp(12px, 1vw, 16px);
+                white-space: nowrap;
+            }
+
+            td,
+            th {
+                padding: 8px;
+                word-wrap: break-word;
+            }
+
+            .badge {
+                cursor: pointer;
+            }
+        </style>
+
+        <body>
+            <div class="table-responsive">
+                <form id="scrapeForm">
+                    <table class="table table-bordered table-nowrap text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <div class="input-group">
+                                        <input type="text" name="calendarPicker" id="calendarPicker"
+                                            class="form-control" placeholder="Select date range"
+                                            data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true"
+                                            onchange="applyFilters()">
+                                        <button type="button" id="clearDate"
+                                            class="btn btn-outline-secondary">Clear</button>
+                                    </div>
+                                </th>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        // กำหนดวันที่เริ่มต้นเป็นวันนี้
+                                        const today = new Date().toISOString().split('T')[0];
+
+                                        // กำหนด flatpickr instance
+                                        const fp = flatpickr("#calendarPicker", {
+                                            mode: "range",
+                                            dateFormat: "Y-m-d", // รูปแบบวันที่เป็น YYYY-MM-DD
+                                            onChange: function (selectedDates, dateStr, instance) {
+                                                if (selectedDates.length === 2) {
+                                                    // เพิ่ม 1 วันให้กับแต่ละวันที่เลือก
+                                                    let startDate = new Date(selectedDates[0].getTime() + 86400000);
+                                                    let endDate = new Date(selectedDates[1].getTime() + 86400000);
+
+                                                    // ตั้งค่าค่าที่แสดงใน input
+                                                    instance.input.value = startDate.toISOString().split('T')[0] + ' - ' + endDate.toISOString().split('T')[0];
+                                                }
+                                            }
+                                        });
+
+
+                                        // ตั้งค่าค่าเริ่มต้นของ input เป็นวันที่ปัจจุบัน
+                                        document.getElementById('calendarPicker').value = `${today} - ${today}`;
+
+                                        // ปุ่ม Clear
+                                        document.getElementById('clearDate').addEventListener('click', function () {
+                                            fp.clear(); // เคลียร์ค่าใน flatpickr
+                                            document.getElementById('calendarPicker').value = ''; // ล้างค่าใน input
+                                            applyFilters(); // รีเฟรชข้อมูลทั้งหมด
+                                        });
+                                    });
+                                </script>
+                                <th scope="col">
+                                    <select class="form-select" id="nameStatusDropdown" onchange="applyFilters()">
+                                        <option value="All">All Auctions</option>
+                                        <% const nameStatusOptions=[...new Set(records.map(item=> item.name_status))];
+                                            if (nameStatusOptions.length > 0) {
+                                            nameStatusOptions.forEach(option => {
+                                            %>
+                                            <option value="<%= option %>">
+                                                <%= option %>
+                                            </option>
+                                            <% }); } %>
+                                    </select>
+                                </th>
+                                <th scope="col">Total cars</th>
+                                <th scope="col">Total images</th>
+                                <th scope="col">Image download </th>
+                                <th scope="col">loaded images</th>
+                                <th scope="col">Insert to db</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Content will be inserted by AJAX -->
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <!-- Popup Modal -->
+            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="uploadModalLabel">Upload CSV</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <iframe id="uploadFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function showInfo(url) {
+                    // ตั้งค่า URL ของ iframe
+                    var iframeHTML = `<iframe src="${url}" width="100%" height="400px" frameborder="0"></iframe>`;
+                    if (url === '') {
+                        iframeHTML = 'Null'
+                    }
+
+                    // ใส่ iframe ลงใน modal
+                    document.getElementById('modalMessage').innerHTML = iframeHTML;
+
+                    // เปิด Modal
+                    var myModal = new bootstrap.Modal(document.getElementById('infoModal'));
+                    myModal.show();
+                }
+            </script>
+
+            <!-- Modal -->
+            <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalLabel">ข้อมูลเพิ่มเติม</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modalMessage">
+                            <!-- iframe จะถูกแสดงที่นี่ -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function openPopupModal(nameStatus, subfolder, csvName) {
+                    const url = `/db-upload?auctionSelect=${nameStatus}&subfolderSelect=${subfolder}&csvSelect=${csvName}`;
+                    document.getElementById('uploadFrame').src = url; // เปลี่ยน URL ของ iframe
+                    const modal = new bootstrap.Modal(document.getElementById('uploadModal'));
+                    modal.show(); // แสดง Modal
+                }
+            </script>
+
+            <script>
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl);
+                    });
+                });
+
+                // ฟังก์ชันกรองข้อมูลที่ได้รับจาก Ajax
+                function applyFilters() {
+                    const date = document.getElementById('calendarPicker').value;
+                    const nameStatus = document.getElementById('nameStatusDropdown').value;
+
+                    $.ajax({
+                        url: 'status/api',  // Route for fetching filtered data
+                        method: 'GET',
+                        data: { date, nameStatus },
+                        success: function (data) {
+                            const tableBody = document.getElementById('tableBody');
+                            tableBody.innerHTML = '';  // Clear the existing rows
+
+                            // Iterate over the filtered data and append new rows
+                            data.forEach(i => {
+                                const row = document.createElement('tr');
+                                const fileName = `${i.csv_name}`;
+                                const result = (fileName.match(/(.*?-\d{1,2}_\d{1,2}_\d{4})/) || [fileName])[1];
+
+                                row.innerHTML = `
+                    <td>${new Date(i.timestamp).toLocaleString('en-US', {
+                                    weekday: 'short', year: 'numeric', month: 'short', day: '2-digit',
+                                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+                                }).replace(/,/g, '').split('GMT')[0].trim()}</td>
+                    
+                    <td>
+                        <div class="d-flex align-items-center justify-content-center w-100">
+                            <span class="me-2">${i.name_status}</span>
+                            <span class="badge ${getStatusClass(i.status)}" data-bs-toggle="tooltip" 
+                                data-bs-placement="top" title="${escapeHtml(i.message)}">
+                                ${i.status}
+                            </span>
+                        </div>
+                    </td>
+                    
+                    <td>${i.num_row}</td>
+                    <td>${i.total_img || 0}</td>
+                    
+                    <td>
+                        ${getLoadImageButton(i)}
+                    </td>
+
+                    <td>${i.finish_img || 0}</td>
+                    
+                    <td>
+                        ${getInsertButton(i, result)}
+                    </td>
+                `;
+
+                                tableBody.appendChild(row);
+                            });
+                        },
+                        error: function (err) {
+                            console.error('Error fetching filtered records:', err);
+                        }
+                    });
+                }
+
+                // Helper function to get the correct status badge class
+                function getStatusClass(status) {
+                    if (status === 'success') return 'bg-success-subtle text-success';
+                    if (status === 'warn') return 'bg-warning-subtle text-warning';
+                    return 'bg-danger-subtle text-danger';
+                }
+
+                // Helper function to generate Load Image button
+                function getLoadImageButton(i) {
+                    if (i.status === 'success' && i.errcode !== 'success' && i.errcode !== 'process') {
+                        return `
+            <button type="button" class="btn btn-sm ${i.errcode === '500' || i.errcode === 'error' ? "btn-danger" : "btn-primary"}" 
+                onclick="loadFile('${i.name_status}/${i.csv_name}', ${i.load_image_status_id})">
+                ${i.errcode ? 'Error Try Again' : 'Load Image'}
+            </button>
+            ${i.log_file ? `
+                <a href="javascript:void(0);" onclick="showInfo('index-logs/${i.log_file}')" class="text-primary">
+                    <i class="ri-information-line ms-1"></i>
+                </a>` : ''}
+        `;
+                    } else {
+                        return `
+            <span class="badge ${i.errcode === 'success' ? "bg-success-subtle text-success" : "bg-warning-subtle text-warning"}" disabled>
+                ${i.errcode || "Can't Load"} 
+            </span>
+${i.log_file ? `
+                <a href="javascript:void(0);" onclick="showInfo('index-logs/${i.log_file}')" class="text-primary">
+                    <i class="ri-information-line ms-1"></i>
+                </a>` : ''}
+        `;
+                    }
+                }
+
+                // Helper function to generate Insert button
+                function getInsertButton(i, result) {
+                    if (i.csv_name && i.errcode === 'success') {
+                        return i.Checkinsert === 1
+                            ? `
+                <button type="button" onclick="openPopupModal('${i.name_status}', '${result}', '${i.csv_name}')"
+                        style="background: none; border: none; color: green; cursor: pointer;" 
+                        title="Click to view details">
+                    <i class="fas fa-check-circle" style="margin-right: 5px;"></i> 
+                    <span style="text-decoration: underline;">Inserted</span>
+                </button>
+            `
+                            : `
+                <button type="button" class="btn btn-primary btn-sm" onclick="openPopupModal('${i.name_status}', '${result}', '${i.csv_name}')">Insert</button>
+            `;
+                    } else {
+                        return "-";
+                    }
+                }
+
+
+
+
+                function escapeHtml(str) {
+                    return str.replace(/[&<>"'`=\/]/g, function (match) {
+                        const escapeMap = {
+                            '&': '&amp;',
+                            '<': '&lt;',
+                            '>': '&gt;',
+                            '"': '&quot;',
+                            "'": '&#x27;',
+                            '`': '&#x60;',
+                            '=': '&#x3D;',
+                            '/': '&#x2F;'
+                        };
+                        return escapeMap[match];
+                    });
+                }
+
+                function loadFile(filePath, id) {
+                    fetch(`/load-image/${filePath}/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ path: filePath, id: id }) // ส่งข้อมูลเป็น JSON
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json(); // แปลง response เป็น JSON
+                        })
+                        .then(data => {
+                            console.log("Upload Success:", data);
+                        })
+                        .catch(error => {
+                            console.error("Upload Failed:", error);
+                        });
+                }
+
+
+
+                // เรียกใช้ฟังก์ชัน applyFilters ทุกครั้งที่มีการเปลี่ยนแปลงค่าใน input หรือ select
+                document.getElementById('calendarPicker').addEventListener('change', applyFilters);
+                document.getElementById('nameStatusDropdown').addEventListener('change', applyFilters);
+                setInterval(applyFilters, 1000);
+            </script>
+        </body>
+
+        <%- contentFor('FooterJs') %>

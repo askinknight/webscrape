@@ -1,0 +1,294 @@
+<%- contentFor('HeaderCss') %>
+    <!-- เพิ่มลิงก์ DataTables CSS และ Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        #main-container {
+            width: 100%;
+            display: flex;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #table-container {
+            width: 100%;
+            transition: width 0.3s ease-in-out;
+        }
+
+        #preview-container {
+            width: 0;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .show-preview #table-container {
+            width: 50%;
+        }
+
+        .show-preview #preview-container {
+            width: 50%;
+            display: block !important;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+    </style>
+
+    <%- contentFor('body') %>
+        <div class="container-fluid mt-2">
+            <h1 class="text-center mb-3">ข้อมูลจาก CSV</h1>
+
+            <div class="alert alert-info">
+                <strong>Auction:</strong>
+                <%= auctionSelect %><br>
+                    <strong>Subfolder:</strong>
+                    <%= subfolderSelect %><br>
+                        <strong>CSV File:</strong>
+                        <%= csvSelect %>
+                            <div class="d-flex justify-content-between">
+                                <button id="insertCsvBtn" class="btn btn-primary mt-4" <%=Checkinsert? "disabled" : ""
+                                    %>>Insert to Database</button>
+                            </div>
+            </div>
+
+            <div id="main-container" class="d-flex">
+                <!-- คอลัมน์ซ้าย: ตาราง -->
+                <div id="table-container" class="flex-grow-1">
+                    <div class="d-flex justify-content-between">
+                        <button id="reload" class="btn btn-primary mt-3"
+                            onclick="window.location.reload();">Retable</button>
+                        <button id="deleteAllButton" class="btn btn-danger mt-3">Delete All (Search Results)</button>
+                    </div>
+                    <form id="csvForm" action="/db-upload/savecsv" method="POST">
+                        <button id="saveCsvBtn" type="submit" class="btn btn-success mt-4 mb-3">Save Changes</button>
+                        <input type="hidden" name="auction" value="<%= auctionSelect %>">
+                        <input type="hidden" name="subfolder" value="<%= subfolderSelect %>">
+                        <input type="hidden" name="csvFile" value="<%= csvSelect %>">
+
+                        <table id="csvTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th>ลบ</th>
+                                    <% const columns=Object.keys(csvData[0]); const downloadCols=columns.filter(col=>
+                                        csvData.some(row => row[col].startsWith("downloads/")));
+                                        const bankCols = columns.filter(col => col === "bank");
+                                        const otherCols = columns.filter(col => !downloadCols.includes(col) && col !==
+                                        "bank");
+                                        const orderedCols = [...downloadCols, ...bankCols, ...otherCols];
+                                        %>
+                                        <% orderedCols.forEach(col=> { %>
+                                            <th>
+                                                <%= col %>
+                                            </th>
+                                            <% }); %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% csvData.forEach((row, rowIndex)=> { %>
+                                    <tr>
+                                        <td class="text-center">
+                                            <input type="checkbox" value="<%= rowIndex %>" class="rowCheckbox">
+                                        </td>
+                                        <!-- เพิ่มปุ่มลบแถว -->
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                onclick="removeRow(<%= rowIndex %>)">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </td>
+                                        <% orderedCols.forEach(col=> { %>
+                                            <td class="text-center">
+                                                <div style="display: none;">
+                                                    <%= row[col] %>
+                                                </div>
+                                                <% if (row[col] && row[col].startsWith("downloads/")) { %>
+                                                    <a href="#" class="btn btn-link d-inline-flex align-items-center"
+                                                        onclick="openPreview('<%= row[col] %>', this); return false;">
+                                                        <i class="ri-search-line me-1"></i>
+                                                        <%= row[col].includes('pdf') ? "PDF" : "Image" %>
+                                                    </a>
+                                                    <input type="hidden" name="data[<%= rowIndex %>][<%= col %>]"
+                                                        value="<%= row[col] %>">
+                                                    <% } else { %>
+                                                        <input type="text" name="data[<%= rowIndex %>][<%= col %>]"
+                                                            value="<%= row[col] %>">
+                                                        <% } %>
+                                            </td>
+                                            <% }); %>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+
+                <!-- คอลัมน์ขวา: พื้นที่แสดงไฟล์ Download -->
+                <div id="preview-container" class="d-none">
+                    <div class="preview-header">
+                        <button onclick="closePreview()" class="btn btn-danger">Close</button>
+                    </div>
+                    <iframe id="previewFrame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+            </div>
+
+            <script>
+                function openPreview(fileUrl, link) {
+                    document.getElementById('previewFrame').src = fileUrl;
+                    // เปิดโหมด 2 คอลัมน์
+                    document.getElementById('main-container').classList.add('show-preview');
+                    // ไฮไลท์แถวที่ถูกกด
+                    let row = link.closest('tr');
+                    document.querySelectorAll("#csvTable tbody tr").forEach(tr => tr.classList.remove('table-warning'));
+                    row.classList.add('table-warning');
+                }
+
+                function closePreview() {
+                    document.getElementById('main-container').classList.remove('show-preview');
+                    // ลบไฮไลท์แถวที่ถูกกด
+                    document.querySelectorAll("#csvTable tbody tr").forEach(tr => tr.classList.remove('table-warning'));
+                }
+
+                function removeRow(rowIndex) {
+                    // ลบแถวจาก DataTable
+                    const table = $('#csvTable').DataTable(); // เรียก DataTable instance
+                    table.row(rowIndex).remove().draw(); // ลบแถวที่เลือกและอัปเดต DataTable
+                }
+
+
+
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    // ✅ Initialize DataTable
+                    const table = new DataTable("#csvTable", {
+                        scrollX: true,
+                        responsive: true,
+                        searching: true,
+                        ordering: true,
+                        lengthMenu: [10, 25, 50, 100],
+                    });
+
+                    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+                    const deleteAllButton = document.getElementById("deleteAllButton");
+
+                    selectAllCheckbox.addEventListener('change', function () {
+                        // เลือกหรือยกเลิกการเลือกเฉพาะแถวที่แสดงผลจากการค้นหาหรือกรองข้อมูล
+                        const checked = selectAllCheckbox.checked;
+                        table.rows({ search: 'applied' }).nodes().to$().find('.rowCheckbox').prop('checked', checked);
+                    });
+
+                    // เพิ่มฟังก์ชันการลบแถวทั้งหมดที่แสดงผลจากการค้นหา
+                    deleteAllButton.addEventListener("click", function () {
+                        if (confirm("Are you sure you want to delete all rows from search results?")) {
+                            // ลบแถวทั้งหมดจากผลการค้นหา
+                            const rowsToDelete = table.rows({ search: 'applied' }).nodes().to$().filter(function () {
+                                return $(this).find('.rowCheckbox').prop('checked'); // ตรวจสอบว่า checkbox ถูกเลือก
+                            });
+
+                            // ลบแถวที่ถูกเลือก
+                            rowsToDelete.each(function () {
+                                const rowIndex = $(this).index(); // ดึง index ของแถว
+                                table.row(rowIndex).remove().draw(); // ลบแถวที่เลือกและอัปเดต DataTable
+                            });
+                        }
+                    });
+
+                    const form = document.getElementById("csvForm");
+                    const saveCsvBtn = document.getElementById("saveCsvBtn");
+
+                    if (form && saveCsvBtn) {
+                        saveCsvBtn.addEventListener("click", function (event) {
+                            event.preventDefault(); // ป้องกันการ submit ปกติ
+                            // ✅ ดึงค่าจาก hidden input
+                            const auction = document.querySelector("input[name='auction']").value;
+                            const subfolder = document.querySelector("input[name='subfolder']").value;
+                            const csvFile = document.querySelector("input[name='csvFile']").value;
+                            // ✅ ดึงข้อมูลจากตาราง DataTable
+                            const data = [];
+                            table.rows().every(function () {
+                                const rowNode = this.node();
+                                const rowData = {};
+                                // ตรวจสอบว่าแถวนี้ยังอยู่หรือถูกลบ
+                                if (rowNode) {
+                                    rowNode.querySelectorAll("input").forEach((input) => {
+                                        rowData[input.name.split("][").pop().replace("]", "")] = input.value;
+                                    });
+                                    data.push(rowData);
+                                }
+                            });
+                            // ✅ สร้าง JSON Object ให้ตรงกับ `req.body`
+                            const formDataObj = {
+                                auction,
+                                subfolder,
+                                csvFile,
+                                data,
+                            };
+                            console.log("📤 Sending Data:", formDataObj);
+                            // ✅ ส่งข้อมูลแบบ JSON ด้วย fetch API
+                            fetch(form.action, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(formDataObj),
+                            })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    if (data.message) {
+                                        alert(`${data.message}`);
+                                    } else {
+                                        alert("✅ บันทึกสำเร็จ!");
+                                    }
+                                    console.log("📥 Server Response:", data);
+
+                                })
+                                .catch((error) => {
+                                    alert("❌ เกิดข้อผิดพลาด!");
+                                    console.error("🚨 Error:", error);
+                                });
+                        });
+
+                    }
+                });
+
+                document.getElementById('insertCsvBtn').addEventListener('click', async function () {
+                    const auction = '<%= auctionSelect %>';
+                    const subfolder = '<%= subfolderSelect %>';
+                    const csvFile = '<%= csvSelect %>';
+
+                    if (!auction || !subfolder || !csvFile) {
+                        alert('กรุณาเลือก Auction, Subfolder และ CSV');
+                        return;
+                    }
+                    if (confirm('Are you sure you want to Insert ?')) {
+                        // ส่งข้อมูลไปยัง backend
+                        try {
+                            const response = await fetch('/db-upload/insertcsv', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ auction, subfolder, csvFile })
+                            });
+
+                            const result = await response.text(); // รับข้อความที่ส่งกลับจากเซิร์ฟเวอร์
+
+                            alert(result); // แสดงผลลัพธ์เป็น Alert
+                            window.location.reload();
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+                        }
+                    }
+                });
+
+            </script>
+
+            <%- contentFor('FooterJs') %>
+                <!-- ใส่ลิงก์ jQuery และ DataTables JS -->
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

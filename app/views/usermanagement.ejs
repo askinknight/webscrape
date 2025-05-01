@@ -1,0 +1,415 @@
+<%- contentFor('HeaderCss') %>
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<!-- jQuery และ DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <%- contentFor('body') %>
+
+        <h1 class="mt-2 mb-4">Admin Management</h1>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">User</h4>
+            </div><!-- end card header -->
+        
+            <div class="card-body">
+                <!-- Add/Remove Buttons and Search Box -->
+                <div class="listjs-table" id="customerList">
+                    <div class="row g-4 mb-3">
+                        <div class="col-sm-auto">
+                            <div>
+                                <button type="button" class="btn btn-primary add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Add user</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+        
+                    <!-- Table -->
+                    <div class="table-responsive table-card mt-3 mb-1">
+                        <table class="table align-middle table-nowrap" id="customerTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="sort" data-sort="name">Name</th>
+                                    <th class="sort" data-sort="username">Username</th>
+                                    <th class="sort" data-sort="role">Role</th>
+                                    <th class="sort" data-sort="action">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% users.forEach(user => { %>
+                                <tr>
+                                    <form action="/admin/manage" method="POST" class="user-form">
+                                        <input type="hidden" name="type" value="user">
+                                        <input type="hidden" name="id" value="<%= user.id %>">
+                                        <td>
+                                            <input type="text" class="form-control" name="name" value="<%= user.name %>" required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="username" value="<%= user.username %>" required>
+                                        </td>
+                                        <td>
+                                            <select name="role_id" class="form-select">
+                                                <% roles.forEach(role => { %>
+                                                <option value="<%= role.id %>" <%= role.id == user.role_id ? 'selected' : '' %>>
+                                                    <%= role.role_name %>
+                                                </option>
+                                                <% }) %>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-primary" name="action" value="update">Update</button>
+                                            <button type="submit" class="btn btn-danger" name="action" value="delete" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </td>
+                                    </form>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+        
+                    <!-- Pagination (Optional) -->
+                    <div class="d-flex justify-content-end">
+                        <div class="pagination-wrap hstack gap-2">
+                            <a class="page-item pagination-prev disabled" href="javascript:void(0)">Previous</a>
+                            <ul class="pagination listjs-pagination mb-0"></ul>
+                            <a class="page-item pagination-next" href="javascript:void(0);">Next</a>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+        
+            <!-- Modal for Add/Edit User -->
+            <div class="modal fade" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-light p-3">
+                            <h5 class="modal-title">Add/Edit User</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+                        </div>
+                        <form action="/admin/manage" method="POST">
+                            <input type="hidden" name="type" value="user">
+                            <input type="hidden" name="id" id="userId"> <!-- Hidden ID for edit -->
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Enter name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" name="username" id="username" placeholder="Enter username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="role_id" class="form-label">Role</label>
+                                    <select name="role_id" class="form-select" id="role_id" required>
+                                        <% roles.forEach(role => { %>
+                                            <option value="<%= role.id %>"><%= role.role_name %></option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="hstack gap-2 justify-content-end">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="action" value="insert">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Roles Table -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Roles</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <!-- Add Button -->
+                <div class="listjs-table" id="roleList">
+                    <div class="row g-4 mb-3">
+                        <div class="col-sm-auto">
+                            <div>
+                                <button type="button" class="btn btn-primary add-btn" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+                                    <i class="ri-add-line align-bottom me-1"></i> Add Role
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-responsive table-card mt-3 mb-1">
+                        <table class="table align-middle table-nowrap" id="roleTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Role Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% roles.forEach(role => { %>
+                                <tr>
+                                    <form action="/admin/manage" method="POST">
+                                        <input type="hidden" name="type" value="role">
+                                        <input type="hidden" name="id" value="<%= role.id %>">
+
+                                        <td>
+                                            <input type="text" class="form-control" name="role_name" value="<%= role.role_name %>" required>
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-primary" name="action" value="update">Update</button>
+                                            <button type="submit" class="btn btn-danger" name="action" value="delete" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </td>
+                                    </form>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+
+            <!-- Modal for Add Role -->
+            <div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-light p-3">
+                            <h5 class="modal-title" id="addRoleLabel">Add Role</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="/admin/manage" method="POST">
+                            <input type="hidden" name="type" value="role">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="role_name" class="form-label">Role Name</label>
+                                    <input type="text" class="form-control" name="role_name" id="role_name" placeholder="Enter Role Name" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" name="action" value="insert">Add Role</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Paths Table -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">Add, Edit & Remove Paths</h4>
+    </div><!-- end card header -->
+
+    <div class="card-body">
+        <!-- Add Button -->
+        <div class="listjs-table" id="pathList">
+            <div class="row g-4 mb-3">
+                <div class="col-sm-auto">
+                    <div>
+                        <button type="button" class="btn btn-primary add-btn" data-bs-toggle="modal" data-bs-target="#addPathModal">
+                            <i class="ri-add-line align-bottom me-1"></i> Add Path
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive table-card mt-3 mb-1">
+                <table class="table align-middle table-nowrap" id="pathTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Path</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% paths.forEach(path => { %>
+                        <tr>
+                            <form action="/admin/manage" method="POST">
+                                <input type="hidden" name="type" value="path">
+                                <input type="hidden" name="id" value="<%= path.id %>">
+                                <td>
+                                    <input type="text" class="form-control" name="path" value="<%= path.path %>" required>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary" name="action" value="update">Update</button>
+                                    <button type="submit" class="btn btn-danger" name="action" value="delete" onclick="return confirm('Are you sure?')">Delete</button>
+                                </td>
+                            </form>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- end card body -->
+
+    <!-- Modal for Add Path -->
+    <div class="modal fade" id="addPathModal" tabindex="-1" aria-labelledby="addPathLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="addPathLabel">Add Path</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/admin/manage" method="POST">
+                    <input type="hidden" name="type" value="path">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="path" class="form-label">Path</label>
+                            <input type="text" class="form-control" name="path" id="path" placeholder="Enter Path" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="action" value="insert">Add Path</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <!-- Role Permissions Table -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h4 class="card-title mb-0">Add, Edit & Remove Role Permissions</h4>
+    </div><!-- end card header -->
+
+    <div class="card-body">
+        <!-- Add Button -->
+        <div class="listjs-table" id="rolePermissionList">
+            <div class="row g-4 mb-3">
+                <div class="col-sm-auto">
+                    <div>
+                        <button type="button" class="btn btn-primary add-btn" data-bs-toggle="modal" data-bs-target="#addRolePermissionModal">
+                            <i class="ri-add-line align-bottom me-1"></i> Add Role Permission
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive table-card mt-3 mb-1">
+                <table class="table align-middle table-nowrap" id="rolePermissionTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Role</th>
+                            <th>Path</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% roleMaps.forEach(map => { %>
+                        <tr>
+                            <form action="/admin/manage" method="POST">
+                                <input type="hidden" name="type" value="role-map">
+                                <input type="hidden" name="id" value="<%= map.id %>">
+                                <td>
+                                    <select class="form-select" name="role_id">
+                                        <% roles.forEach(role => { %>
+                                            <option value="<%= role.id %>" <%= role.id == map.role_id ? 'selected' : '' %>><%= role.role_name %></option>
+                                        <% }) %>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-select" name="path_id">
+                                        <% paths.forEach(path => { %>
+                                            <option value="<%= path.id %>" <%= path.id == map.path_id ? 'selected' : '' %>><%= path.path %></option>
+                                        <% }) %>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary" name="action" value="update">Update</button>
+                                    <button type="submit" class="btn btn-danger" name="action" value="delete" onclick="return confirm('Are you sure?')">Delete</button>
+                                </td>
+                            </form>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- end card body -->
+
+    <!-- Modal for Add Role Permission -->
+    <div class="modal fade" id="addRolePermissionModal" tabindex="-1" aria-labelledby="addRolePermissionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="addRolePermissionLabel">Add Role Permission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/admin/manage" method="POST">
+                    <input type="hidden" name="type" value="role-map">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="role_id" class="form-label">Role</label>
+                            <select class="form-select" name="role_id" required>
+                                <% roles.forEach(role => { %>
+                                    <option value="<%= role.id %>"><%= role.role_name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="path_id" class="form-label">Path</label>
+                            <select class="form-select" name="path_id" required>
+                                <% paths.forEach(path => { %>
+                                    <option value="<%= path.id %>"><%= path.path %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="action" value="insert">Add Role Permission</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <%- contentFor('FooterJs') %>
+        <script>
+    $(document).ready(function() {
+        $('#userTable').DataTable({
+            "pageLength": 5,  // แสดง 5 แถวต่อหน้า
+            "lengthMenu": [5, 10, 25, 50],  // ตัวเลือกจำนวนแถว
+            "ordering": false,  // ปิดการเรียงลำดับคอลัมน์
+            "searching": false,
+            "language": {
+                "search": "ค้นหา:",
+                "lengthMenu": "แสดง _MENU_ รายการ",
+                "info": "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+                "paginate": {
+                    "first": "หน้าแรก",
+                    "last": "หน้าสุดท้าย",
+                    "next": "ถัดไป",
+                    "previous": "ก่อนหน้า"
+                }
+            }
+        });
+    });
+</script>
+<script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+<!-- prismjs plugin -->
+<script src="/assets/libs/prismjs/prism.js"></script>
+<script src="/assets/libs/list.js/list.min.js"></script>
+<script src="/assets/libs/list.pagination.js/list.pagination.min.js"></script>
+<!-- listjs init -->
+<script src="/assets/js/pages/listjs.init.js"></script>

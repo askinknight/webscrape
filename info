@@ -1,0 +1,82 @@
+Project/
+├── .env                     # Environment configuration variables
+├── Dockerfile               # Docker configuration
+├── docker-compose.yml       # Docker Compose configuration for multi-container setup
+├── init.sql                 # SQL file to initialize database schema and tables
+├── package.json             # Project dependencies and scripts
+├── package-lock.json        # Lock file for dependencies
+├── app.js                   # Main application entry point
+├── info                     # Project information and documentation
+├── logs/                    # Directory for storing log files
+│
+├── app/                     # Application source files
+│   ├── config/              # Configuration files
+│   │   ├── database.js      # Database connection configurations
+│   │   ├── jobs.json        # JSON file defining scheduled jobs
+│   │
+│   ├── i18n/                # Internationalization files for multi-language support
+│
+│   ├── routes/              # Express routers for different functionalities
+│   │   ├── config.js        # Routes for configuration settings
+│   │   ├── data.js          # Routes for data management
+│   │   ├── index.js         # Main router entry file
+│   │   ├── schedule.js      # Routes for scheduling tasks
+│   │   ├── status.js        # Routes for status management and notifications
+│   │   ├── loadImage.js     # Routes for handling image loading
+│   │   ├── downloads.js     # Routes for file download management
+│
+│   ├── src/                 # Frontend assets and source files
+│   │   ├── assets/          
+│   │   │   ├── lang/        # Language files for UI text
+│   │   │   ├── images/      # Images used in the frontend
+│   │   │   ├── scss/        # Stylesheets in SCSS format
+│   │   │   ├── fonts/       # Font files for styling
+│   │   │   ├── js/          # JavaScript files for frontend interactivity
+│   │   │   ├── json/        # JSON files for frontend data or configuration
+│
+│   ├── views/               # EJS templates for rendering pages
+│   │   ├── data.ejs         # Data management interface
+│   │   ├── schedule.ejs     # Schedule configuration page
+│   │   ├── index.ejs        # Homepage
+│   │   ├── config.ejs       # Configuration settings page
+│   │   ├── status.ejs       # Status monitoring page
+│   │   ├── downloads/       # Templates for managing downloads
+│   │   │   ├── folder.ejs   # Folder view for downloads
+│   │   │   ├── index.ejs    # Index view for download listings
+│   │   │   ├── files.ejs    # File view within a folder
+│   │   ├── load-image/      # Templates for image loading interface
+│   │   │   ├── file.ejs
+│   │   │   ├── folder.ejs
+│   │   ├── partials/        # Partial templates for reusable components
+│   │   │   ├── customizer.ejs        # UI customization panel
+│   │   │   ├── page-title.ejs        # Title section for pages
+│   │   │   ├── topbar.ejs            # Top navigation bar
+│   │   │   ├── menu.ejs              # Main menu
+│   │   │   ├── main.ejs              # Main content area
+│   │   │   ├── head-css.ejs          # CSS link in head section
+│   │   │   ├── sidebar.ejs           # Sidebar menu
+│   │   │   ├── footer.ejs            # Footer
+│   │   │   ├── vendor-scripts.ejs    # Vendor JS scripts
+│   │   │   ├── title-meta.ejs        # Page metadata
+│   │   ├── layouts/          # Layout templates
+│   │   │   ├── layout-detached.ejs       # Detached layout
+│   │   │   ├── layout-horizontal.ejs     # Horizontal layout
+│   │   │   ├── layout-without-bradcrumb.ejs  # Without breadcrumb layout
+│   │   │   ├── layout-twocolumn.ejs       # Two-column layout
+│   │   │   ├── layout-verti-hoverd.ejs    # Vertical hover layout
+│   │   │   ├── layout-without-nav.ejs     # No-navigation layout
+│   │   │   ├── layout.ejs                 # Default layout
+│
+├── uploads/               # Data and scripts for file processing and scraping
+│   ├── scrape.py          # Main scraping script
+│   ├── scrape_code/       # Contains scraping scripts for different data sources
+│   ├── load_image/        # Scripts and code for image loading and management
+│
+├── public/                # Publicly accessible files
+│   ├── imgcon.json        # JSON configuration for images
+│   ├── status.json        # JSON file for monitoring status
+│   ├── load-image-status.json  # JSON file for load-image process status
+│   ├── downloads/         # Downloadable files
+│   ├── css/
+│   │   ├── style.css      # Main stylesheet
+│   ├── assets/            # Additional static assets

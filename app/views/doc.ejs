@@ -1,0 +1,507 @@
+<%- contentFor('HeaderCss') %>
+    <!-- ✅ DataTables & Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+
+    <!-- ✅ jQuery (สำคัญ) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- ✅ Moment.js (จำเป็นสำหรับ Date Range Picker) -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+    <!-- ✅ Date Range Picker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <!-- ✅ DataTables -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <!-- ✅ DataTables Buttons (ทำให้ปุ่ม Export ใช้งานได้) -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <style>
+        #main-container {
+            display: flex;
+            height: 100vh;
+            /* ปรับขนาดให้เต็มหน้าจอ */
+            overflow: hidden;
+        }
+
+        #table-container {
+            flex-grow: 1;
+            overflow: auto;
+            padding: 10px;
+        }
+
+        #preview-container {
+            width: 60%;
+            /* ให้ Preview Container มีขนาดพอดี */
+            min-width: 350px;
+            border-left: 2px solid #ddd;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        #previewFrame {
+            flex-grow: 1;
+            width: 100%;
+            border: none;
+        }
+
+        #loading {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-image {
+            width: 100%;
+            /* แสดงภาพให้เต็มหน้าจอ */
+            height: auto;
+            margin: 10px 0;
+        }
+
+        .file-info {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .file-container {
+            display: block;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #images-container {
+            overflow-y: auto;
+            /* ให้ scroll เมื่อมีการ overflow ในแนวตั้ง */
+            max-height: 80vh;
+            /* จำกัดความสูงของ container */
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+
+    <%- contentFor('body') %>
+
+
+        <!-- ฟอร์มกรอง -->
+        <div class="card">
+            <div class="card-header p-3 ">
+                <h4>จัดการข้อมูล Dashboard</h4>
+            </div>
+            <div class="card-body">
+                <form id="filter-form" method="POST" action="/filter">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="daterange" class="form-label">เลือกช่วงวันที่</label>
+                            <div class="input-group">
+                                <input type="text" name="daterange" id="daterange" class="form-control"
+                                    placeholder="Select date range" data-provider="flatpickr" data-date-format="d M, Y"
+                                    data-range-date="true">
+                                <button type="button" id="clearDate" class="btn btn-outline-secondary">Clear</button>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Initialize flatpickr for the date range input field
+                                const fp = flatpickr("#daterange", {
+                                    mode: "range",
+                                    dateFormat: "Y-m-d", // รูปแบบวันที่เป็น YYYY-MM-DD
+                                    onChange: function (selectedDates, dateStr, instance) {
+                                        if (selectedDates.length === 2) {
+                                            // เพิ่ม 1 วันให้กับแต่ละวันที่เลือก
+                                            let startDate = new Date(selectedDates[0].getTime() + 86400000);
+                                            let endDate = new Date(selectedDates[1].getTime() + 86400000);
+
+                                            // ตั้งค่าค่าที่แสดงใน input
+                                            instance.input.value = startDate.toISOString().split('T')[0] + ' - ' + endDate.toISOString().split('T')[0];
+                                        }
+                                    }
+                                });
+
+
+                                // เรียกแสดงข้อมูลทั้งหมดตอนโหลดหน้าเว็บ
+                                applyFilters();
+
+                                // Clear date functionality
+                                document.getElementById('clearDate').addEventListener('click', function () {
+                                    fp.clear(); // Clear flatpickr selection
+                                    document.getElementById('daterange').value = ''; // Clear input field
+                                    applyFilters(); // แสดงข้อมูลทั้งหมดเมื่อกด Clear
+                                });
+                            });
+
+                            function applyFilters() {
+                                let dateValue = document.getElementById('daterange').value;
+                                if (!dateValue) {
+                                    console.log("Showing all data (no date filter)");
+                                    // ใส่โค้ดเพื่อโหลดข้อมูลทั้งหมดที่นี่
+                                } else {
+                                    console.log("Filtering data based on selected date range:", dateValue);
+                                    // ใส่โค้ดกรองข้อมูลตามวันที่ที่เลือก
+                                }
+                            }
+                        </script>
+
+
+                        <div class="col-md-6 mb-2">
+                            <label for="auction_name" class="form-label">เลือก Auction Name</label>
+                            <select name="auction_name" class="form-select">
+                                <option value="">-- Select Auction --</option>
+                                <% auctionData.companies.forEach(row=> { %>
+                                    <option value="<%= row.Company %>">
+                                        <%= row.Company %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="brand" class="form-label">เลือก Brand</label>
+                            <select name="brand" class="form-select">
+                                <option value="">-- Select Brand --</option>
+                                <% auctionData.brands.forEach(row=> { %>
+                                    <option value="<%= row.Brand %>">
+                                        <%= row.Brand %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="gear" class="form-label">เลือก Gear</label>
+                            <select name="gear" class="form-select">
+                                <option value="">-- Select Gear --</option>
+                                <% auctionData.gears.forEach(row=> { %>
+                                    <option value="<%= row.Gear %>">
+                                        <%= row.Gear %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="car_type" class="form-label">เลือก Car Type</label>
+                            <select name="car_type" class="form-select">
+                                <option value="">-- Select Car Type --</option>
+                                <% auctionData.categories.forEach(row=> { %>
+                                    <option value="<%= row.Category %>">
+                                        <%= row.Category %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="seller_name" class="form-label">เลือก Seller Name</label>
+                            <select name="seller_name" class="form-select">
+                                <option value="">-- Select Seller --</option>
+                                <% auctionData.sellers.forEach(row=> { %>
+                                    <option value="<%= row.Seller_name %>">
+                                        <%= row.Seller_name %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label for="province" class="form-label">เลือก Province</label>
+                            <select name="province" class="form-select">
+                                <option value="">-- Select Province --</option>
+                                <% auctionData.provinces.forEach(row=> { %>
+                                    <option value="<%= row.Reg_Province %>">
+                                        <%= row.Reg_Province %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mt-4 pt-1">
+                            <button type="submit" class="btn btn-primary w-50">กรองข้อมูล</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div id="main-container">
+            <!-- คอลัมน์ซ้าย: ตาราง -->
+            <div id="table-container">
+                <table id="result-table" class="display"></table>
+            </div>
+
+            <!-- คอลัมน์ขวา: พื้นที่แสดงไฟล์ Download -->
+            <div id="preview-container">
+                <div class="preview-header">
+                    <button onclick="closePreview()" class="btn btn-danger">Close</button>
+                </div>
+                <!-- Animation for loading -->
+                <div id="loading" style="display:none;">Loading...</div>
+                <div id="images-container"></div>
+            </div>
+        </div>
+
+        <script>
+            const form = document.getElementById("filter-form");
+            const resultTable = document.querySelector("#table-container");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault(); // Prevent form submission
+
+                const formData = new FormData(form);
+                const daterange = formData.get("daterange");
+                const auctionName = formData.get("auction_name");
+                const brand = formData.get("brand");
+                const gear = formData.get("gear");
+                const carType = formData.get("car_type");
+                const sellerName = formData.get("seller_name");
+                const province = formData.get("province");
+
+                // Destroy the existing DataTable if any
+                if ($.fn.dataTable.isDataTable('#result-table')) {
+                    $('#result-table').DataTable().clear().destroy();
+                }
+
+                // Create a new table
+                const table = document.createElement('table');
+                table.id = "result-table";
+                table.classList.add('display');
+                resultTable.appendChild(table);
+
+                // Initialize DataTable with server-side processing
+                $(document).ready(function () {
+                    $('#result-table').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            url: "/edit/filter",
+                            method: "POST",
+                            data: function (d) {
+                                d.daterange = daterange;
+                                d.auction_name = auctionName;
+                                d.brand = brand;
+                                d.gear = gear;
+                                d.car_type = carType;
+                                d.seller_name = sellerName;
+                                d.province = province;
+                                d.search = $('#result-table_filter input').val();
+                                d.order = d.order;
+                                d.columns = d.columns;
+                            },
+                            dataSrc: function (json) {
+                                return json.data;
+                            }
+                        },
+                        columnDefs: [
+                            { targets: [2], orderable: false }
+                        ],
+                        columns: [
+                            {
+                                title: "Actions",
+                                data: "id",
+                                render: function (data, type, row) {
+                                    return `
+                <button type="button" class="btn btn-link d-inline-flex align-items-center" title="Edit" onclick="editRow(this, '${row.id}')">
+                    <i class="ri-pencil-line me-1"></i> Save
+                </button>
+            `;
+                                }
+                            },
+                            { title: "Company", data: "Company" },
+                            {
+                                title: "Image URL",
+                                data: "imageUrl",
+                                render: function (data) {
+                                    return data.split('|').map(url => {
+                                        let type = url.includes('/pdf/') ? "PDF" : "Image";
+                                        let icon = url.includes('/pdf/') ? "ri-file-pdf-line" : "ri-image-line";
+                                        return `<a href="#" class="btn btn-link d-inline-flex align-items-center" onclick="openPreview('${url}', this); return false;">
+                        <i class="${icon} me-1"></i> ${type}
+                    </a>`;
+                                    }).join(' ');
+                                }
+                            },
+                            {
+                                title: "Seller Name",
+                                data: "Seller_name",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Seller_name" value="${data}" data-id="${row.id}">`;
+                                }
+                            },
+                            {
+                                title: "Seller Code",
+                                data: "Seller_code",
+                                render: function (data, type, row) {
+                                    return `<input type="text" name="Seller_code" value="${data}" data-id="${row.id}">`;
+                                }
+                            }
+                        ],
+                        scrollX: true,
+                        responsive: true,
+                        searching: true,  // เปิดการค้นหาของ DataTable
+                        ordering: true,
+                        lengthMenu: [5, 10, 15],
+                        language: {
+                            info: "Showing _START_ to _END_ of _TOTAL_ entries",  // แสดงจำนวนแถวที่กำลังแสดง
+                            infoFiltered: "(filtered from _MAX_ total entries)", // ข้อความที่บอกว่าได้กรองข้อมูลแล้ว
+                            processing: "Processing..."  // ข้อความแสดงการโหลดข้อมูล
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+
+            // ฟังก์ชันแก้ไขข้อมูล
+            function editRow(button, rowId) {
+                const row = button.closest('tr');
+                const formData = {};
+
+                // ดึงค่าจาก input ในแถวนี้
+                row.querySelectorAll('input').forEach(input => {
+                    formData[input.name] = input.value;
+                });
+
+                fetch("/doc/update", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: rowId, ...formData }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert("Updated successfully!");
+                        // อัปเดตข้อมูลในแถว
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+
+            function formatDateForCalendar(utcDateString) {
+                // แปลงเป็นวันที่ในรูปแบบ Date object
+                const date = new Date(utcDateString) || utcDateString;
+                if (date === utcDateString) {
+                    return utcDateString
+                }
+
+                // ดึงส่วนต่าง ๆ ของวันที่
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+
+                // ส่งคืนวันที่ในรูปแบบ DD/MM/YYYY
+                return `${year}-${month}-${day}`;
+            }
+
+            function openPreview(fileUrl, link) {
+                // แสดง animation ขณะรอผล
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('images-container').innerHTML = ''; // ล้าง container ก่อนแสดงผลใหม่
+                const imagesContainer = document.getElementById('images-container');
+
+                // ถ้าเป็น PDF ให้ใช้ iframe แทนการแสดงภาพ
+                if (fileUrl.includes('/pdf/')) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = fileUrl; // ใช้ fileUrl ตรงๆ สำหรับไฟล์ PDF
+                    iframe.width = "100%";
+                    iframe.height = "600px"; // ปรับความสูงได้ตามต้องการ
+                    iframe.classList.add('pdf-preview');
+
+                    const container = document.createElement('div');
+                    container.classList.add('file-container');
+                    container.appendChild(iframe);
+                    document.getElementById('loading').style.display = 'none';
+                    imagesContainer.appendChild(container);
+                } else {
+                    // ส่ง request ไปยัง server สำหรับไฟล์ที่ไม่ใช่ PDF
+                    fetch('/doc/check-files', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ path: fileUrl })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            // ซ่อน animation เมื่อได้ผลลัพธ์แล้ว
+                            document.getElementById('loading').style.display = 'none';
+
+                            const docs = [];
+                            const nonDocs = [];
+
+                            data.forEach(item => {
+                                // ถ้าเป็น doc ให้เก็บไว้ใน docs, ถ้าไม่ใช่เก็บไว้ใน nonDocs
+                                const imgElement = document.createElement('img');
+                                imgElement.src = fileUrl.trim() + '/' + item.filename;
+                                imgElement.alt = item.filename;
+                                imgElement.classList.add('preview-image');
+
+                                const fileInfo = document.createElement('div');
+                                fileInfo.classList.add('file-info');
+                                fileInfo.textContent = item.filename;
+
+                                const container = document.createElement('div');
+                                container.classList.add('file-container');
+                                container.appendChild(imgElement);
+                                container.appendChild(fileInfo);
+
+                                if (item.doc === "true") {
+                                    docs.push(container);
+                                } else {
+                                    nonDocs.push(container);
+                                }
+                            });
+
+                            // เพิ่มไฟล์ที่ doc เป็น true ก่อน
+                            docs.forEach(doc => imagesContainer.appendChild(doc));
+                            nonDocs.forEach(nonDoc => imagesContainer.appendChild(nonDoc));
+
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+
+                            // ซ่อน animation ถ้ามี error
+                            document.getElementById('loading').style.display = 'none';
+
+                            // แสดง error message
+                            const errorMessage = document.createElement('div');
+                            errorMessage.classList.add('error-message');
+                            errorMessage.textContent = 'เกิดข้อผิดพลาดในการโหลดไฟล์';
+                            document.getElementById('images-container').appendChild(errorMessage);
+                        });
+                }
+            }
+
+            function closePreview() {
+                document.getElementById('images-container').innerHTML = "No Select";
+                // ลบไฮไลท์แถวที่ถูกกด
+                document.querySelectorAll("#result-table tbody tr").forEach(tr => tr.classList.remove('table-warning'));
+            }
+
+        </script>
+
+        <%- contentFor('FooterJs') %>

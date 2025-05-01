@@ -1,0 +1,9 @@
+{
+    "t_dashboards": "Dashboard",
+    "t_config": "Konfiguration",
+    "t_schedule": "Zeitplan",
+    "t_status": "Status",
+    "t_load_image": "Bild laden",
+    "t_db_upload": "Datenbank hochladen",
+    "t_downloads_directory": "Download-Verzeichnis"
+}
