@@ -8,7 +8,7 @@ import re
 downloads_dir = os.path.join(os.path.dirname(__file__), '../../public', 'downloads', 'Motto_Auction')
 output_dir = os.path.join(os.path.dirname(__file__), '../../public', 'downloads', 'Motto_Auction')
 log_dir = os.path.join(os.path.dirname(__file__), '../../logs', 'Motto_Auction')
-api_url = 'http://199.21.175.150:8081/load-image/update-status'  # เปลี่ยน URL ของ API ตามต้องการ
+api_url = 'http://10.1.136.121:8081/load-image/update-status'  # เปลี่ยน URL ของ API ตามต้องการ
 
 def create_dir(dir_path):
     os.makedirs(dir_path, exist_ok=True)

@@ -35,7 +35,7 @@
     async function updateStatus(name, rowCount, status, message) {
         const date = formatDate(new Date());
         const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-        window.location = `http://199.21.175.150:8081/status/update?name_status=${name}&num_row=${rowCount}&status=${status}&message=${message}&date=${date}&time=${time}`;
+        window.location = `http://10.1.136.121:8081/status/update?name_status=${name}&num_row=${rowCount}&status=${status}&message=${message}&date=${date}&time=${time}`;
     }
 
     async function retryFetch(url, options = {}, retries = 3, delay = 1000) {
@@ -178,6 +178,6 @@
     const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     let total_img = 0;
     total_img += auctionDetailsList.reduce((sum, product) => sum + (product['รย.']?.split('|').length || 0), 0);
-    window.location = `http://199.21.175.150:8081/status/update?name_status=Buy_at_Siam&num_row=${auctionDetailsList.length}&status=success&message=finish&date=${date}&time=${time}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
+    window.location = `http://10.1.136.121:8081/status/update?name_status=Buy_at_Siam&num_row=${auctionDetailsList.length}&status=success&message=finish&date=${date}&time=${time}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
 
 })();

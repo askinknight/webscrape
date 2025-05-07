@@ -162,7 +162,7 @@
                 console.log('Data has been successfully fetched and CSV has been downloaded.');
                 let total_img = 0;
                 total_img += combinedData.reduce((sum, product) => sum + (product.imgurl?.split('|').length || 0), 0);
-                const finishUrl = `http://199.21.175.150:8081/status/update?name_status=Sahakrane_Auction&num_row=${combinedData.length}&status=success&message=finish&date=${todayDate}&time=${hours}:${minutes}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
+                const finishUrl = `http://10.1.136.121:8081/status/update?name_status=Sahakrane_Auction&num_row=${combinedData.length}&status=success&message=finish&date=${todayDate}&time=${hours}:${minutes}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
                 window.location = finishUrl;
             } else {
                 todaynow = new Date();
@@ -171,7 +171,7 @@
                 hours = String(todaynow.getHours()).padStart(2, '0');
                 minutes = String(todaynow.getMinutes()).padStart(2, '0');
                 console.log('ไม่มีข้อมูลที่จะดาวน์โหลด');
-                const noUrl = `http://199.21.175.150:8081/status/update?name_status=Sahakrane_Auction&num_row=0&status=warn&message=${encodeURI('No products found for today.')}&date=${todayDate}&time=${hours}:${minutes}`;
+                const noUrl = `http://10.1.136.121:8081/status/update?name_status=Sahakrane_Auction&num_row=0&status=warn&message=${encodeURI('No products found for today.')}&date=${todayDate}&time=${hours}:${minutes}`;
                 window.location = noUrl;
             }
         } catch (error) {
@@ -181,7 +181,7 @@
             hours = String(todaynow.getHours()).padStart(2, '0');
             minutes = String(todaynow.getMinutes()).padStart(2, '0');
             console.error("Unable to fetch data:", error);
-            const errUrl = `http://199.21.175.150:8081/status/update?name_status=Sahakrane_Auction&num_row=0&status=error&message=${encodeURI(error)}&date=${todayDate}&time=${hours}:${minutes}`;
+            const errUrl = `http://10.1.136.121:8081/status/update?name_status=Sahakrane_Auction&num_row=0&status=error&message=${encodeURI(error)}&date=${todayDate}&time=${hours}:${minutes}`;
             window.location = errUrl;
         }
     } else {

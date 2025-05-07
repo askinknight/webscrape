@@ -42,7 +42,7 @@ function getFormattedDateTime() {
 
 // ฟังก์ชันเพื่ออัพเดตสถานะการทำงาน
 function updateStatus(statusType, count, date, time, message) {
-    const url = `http://199.21.175.150:8081/status/update?name_status=Auction_express&num_row=${count}&status=${statusType}&message=${encodeURIComponent(message)}&date=${date}&time=${time}`;
+    const url = `http://10.1.136.121:8081/status/update?name_status=Auction_express&num_row=${count}&status=${statusType}&message=${encodeURIComponent(message)}&date=${date}&time=${time}`;
     window.location = url;
 }
 
@@ -272,7 +272,7 @@ async function fetchAuctionData(locationId, auctionId) {
                     downloadCSV(csvContent, filename);
                     let total_img = 0;
                     total_img += gg.reduce((sum, product) => sum + (product['Imagepath']?.split('|').length || 0), 0);
-                    const url = `http://199.21.175.150:8081/status/update?name_status=Auction_express&num_row=${gg.length}&status=success&message=finish&date=${date}&time=${time}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
+                    const url = `http://10.1.136.121:8081/status/update?name_status=Auction_express&num_row=${gg.length}&status=success&message=finish&date=${date}&time=${time}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
                     window.location = url;
                 })
                 .catch(error => {

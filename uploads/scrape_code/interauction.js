@@ -41,7 +41,7 @@
     if (linksAndLanes.length === 0) {
         const errorMessage = 'No Auction for today.';
         const status = 'warn';
-        window.location = `http://199.21.175.150:8081/status/update?name_status=Inter_auction&num_row=0&status=${status}&message=${encodeURIComponent(errorMessage)}&date=${day}/${month}/${year}&time=${today.getHours()}:${today.getMinutes()}`;
+        window.location = `http://10.1.136.121:8081/status/update?name_status=Inter_auction&num_row=0&status=${status}&message=${encodeURIComponent(errorMessage)}&date=${day}/${month}/${year}&time=${today.getHours()}:${today.getMinutes()}`;
         return;
     }
 
@@ -214,7 +214,7 @@
     if (allData.length === 0) {
         const warningMessage = 'No Auction for today.';
         const status = 'warn';
-        window.location = `http://199.21.175.150:8081/status/update?name_status=Inter_auction&num_row=0&status=${status}&message=${encodeURIComponent(warningMessage)}&date=${day}/${month}/${year}&time=${today.getHours()}:${today.getMinutes()}`;
+        window.location = `http://10.1.136.121:8081/status/update?name_status=Inter_auction&num_row=0&status=${status}&message=${encodeURIComponent(warningMessage)}&date=${day}/${month}/${year}&time=${today.getHours()}:${today.getMinutes()}`;
         return;
     }
 
@@ -230,5 +230,5 @@
     // Set the filename in the desired format
     const filename = `Inter_auction-${formattedDate}-${formattedTime}.csv`;
     downloadCSV(csv, filename);
-    window.location = `http://199.21.175.150:8081/status/update?name_status=Inter_auction&num_row=${allData.length}&status=success&message=finish&date=${day}/${month}/${year}&time=${today.getHours()}:${today.getMinutes()}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
+    window.location = `http://10.1.136.121:8081/status/update?name_status=Inter_auction&num_row=${allData.length}&status=success&message=finish&date=${day}/${month}/${year}&time=${today.getHours()}:${today.getMinutes()}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
 })();

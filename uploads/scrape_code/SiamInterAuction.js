@@ -102,17 +102,17 @@
             let total_img = 0;
             let total_pdf = products.length;
             total_img += products.reduce((sum, product) => sum + (product.NF_PRODUCT_PICTURE?.split('|').length || 0), 0);
-            let finishUrl = `http://199.21.175.150:8081/status/update?name_status=SiamInter_auction&num_row=${products.length}&status=success&message=finish&date=${todayDateuse}&time=${currentTime}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img + total_pdf}`;
+            let finishUrl = `http://10.1.136.121:8081/status/update?name_status=SiamInter_auction&num_row=${products.length}&status=success&message=finish&date=${todayDateuse}&time=${currentTime}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img + total_pdf}`;
             await openAndCloseTab(finishUrl);
         } else {
             console.log('No auctions or products found for today.');
-            let incompleateUrl = `http://199.21.175.150:8081/status/update?name_status=SiamInter_auction&num_row=${products.length}&status=warn&message=${encodeURI('No auctions or products found for today.')}&date=${todayDateuse}&time=${currentTime}`;
+            let incompleateUrl = `http://10.1.136.121:8081/status/update?name_status=SiamInter_auction&num_row=${products.length}&status=warn&message=${encodeURI('No auctions or products found for today.')}&date=${todayDateuse}&time=${currentTime}`;
             await openAndCloseTab(incompleateUrl);
         }
     } catch (error) {
         console.error('Error:', error);
         errors.push(error.message);
-        let errorUrl = `http://199.21.175.150:8081/status/update?name_status=SiamInter_auction&num_row=0&status=error&message=${encodeURIComponent(errors.join('; '))}&date=${todayDateuse}&time=${currentTime}`;
+        let errorUrl = `http://10.1.136.121:8081/status/update?name_status=SiamInter_auction&num_row=0&status=error&message=${encodeURIComponent(errors.join('; '))}&date=${todayDateuse}&time=${currentTime}`;
         await openAndCloseTab(errorUrl);
     }
 })();
