@@ -212,7 +212,6 @@ router.post('/:action_name/:filename/:id', async (req, res) => {
                     return res.status(500).send('Error executing script');
                 }
 
-                await updateStatus(fileName, 'success', statusId, stdout, 100);
                 res.json({ success: true, message: 'File loaded successfully' });
             });
         } else {
@@ -236,7 +235,7 @@ async function updateStatus( status, statusId) {
         `, [status, statusId]);
 
         if (result.affectedRows === 0) {
-            console.error('No matching record found for update');
+            console.error(`No matching record found for update , ${[status, statusId]}`);
         }
     } catch (error) {
         console.error('Error updating status in database:', error);
@@ -258,9 +257,9 @@ router.post('/update-status', async (req, res) => {
         );
 
         if (updateResult.affectedRows > 0) {
-            console.log('Status updated successfully');
+            console.log(`Status updated successfully , ${[status_code, log_file, successful_images, id]}`);
         } else {
-            console.log('No matching status found in the database.');
+            console.log(`No matching status found in the database. , ${[status_code, log_file, successful_images, id]}`);
         }
     } catch (err) {
         console.error(err);

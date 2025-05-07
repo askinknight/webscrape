@@ -18,6 +18,10 @@ RUN apt-get update && \
 # Create a Python virtual environment
 RUN python3 -m venv /venv
 
+RUN apt-get install -y libopencv-dev gcc g++ x11-apps xvfb
+
+#RUN g++ -o lol lol.c `pkg-config --cflags --libs opencv4`
+
 # Install Python dependencies in the virtual environment
 RUN /venv/bin/pip install --no-cache-dir selenium webdriver-manager pandas requests
 
@@ -32,6 +36,10 @@ RUN npm install
 
 # Copy the rest of the app files
 COPY . .
+
+RUN pwd
+RUN ls
+RUN g++ -o lol lol.c `pkg-config --cflags --libs opencv4`
 
 # Expose the web application port
 EXPOSE 8081

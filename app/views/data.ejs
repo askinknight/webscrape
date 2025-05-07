@@ -1,294 +1,375 @@
 <%- contentFor('HeaderCss') %>
-<!-- jsvectormap css -->
-<link
-  href="/assets/libs/jsvectormap/css/jsvectormap.min.css"
-  rel="stylesheet"
-  type="text/css"
-/>
-
-<!--Swiper slider css-->
-<link
-  href="/assets/libs/swiper/swiper-bundle.min.css"
-  rel="stylesheet"
-  type="text/css"
-/>
+<link href="/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
 <%- contentFor('body') %>
 
-<div class="row">
-  <div class="col">
-    <div class="h-100">
-      <div class="row">
-        <!-- card -->
-        <div class="">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h4 class="card-title mb-0">วิเคราะห์แนวโน้มรถเข้าลานประมูล</h4>
-              <div class="d-flex gap-2">
-                <select id="filterType" class="form-select w-auto">
-                  <option value="quarter">Quarter</option>
-                  <option value="month">Month</option>
-                </select>
-                <select id="filterAuction" class="form-select w-auto">
-                  <option value="all" selected>All Auctions</option>
-                  <option value="Apple">Apple Auction</option>
-                  <option value="Motto">Motto Auction</option>
-                  <option value="Express">Auction express</option>
-                  <option value="BuyAtSiam">Buy at siam</option>
-                  <option value="Inter">Inter Auction</option>
-                  <option value="Premium">Premium inter Auction</option>
-                  <option value="Sahakrane">Sahakrane Auction</option>
-                  <option value="Siaminter">Siaminter Auction</option>
-                </select>
-              </div>
-            </div>
-            <div class="card-body">
-              <div
-                id="column_chart_1"
-                data-colors='["--vz-danger", "--vz-warning", "--vz-success"]'
-                class="apex-charts"
-                dir="ltr"
-              ></div>
-            </div>
-          </div>
+<style>
+  .card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+  }
+  .card-filters select {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  .chart-container {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    height: 400px;
+  }
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  table, th, td {
+    border: 1px solid #ccc;
+  }
+  th, td {
+    padding: 8px;
+    text-align: center;
+  }
+  th {
+    background-color: #f9f9f9;
+  }
+  #loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+  }
+  .spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+</head>
+<body>
+  <div class="d-flex justify-content-end">
+  <div class=" mb-3" style=" width: 20%;">
+    <div class="input-group ">
+        <input type="text" name="calendarPicker" id="calendarPicker" class="form-control" placeholder="Select date range"
+            data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" onchange="applyFilters()">
+        <div class="input-group-append">
+            <a href="#" id="exportForm" class="btn btn-primary">Export</a>
         </div>
-
-        <!-- card -->
-        <div class="">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center">
-              <h4 class="card-title mb-0">สัดส่วนรถเข้าลานประมูล</h4>
-            </div>
-            <div class="card-body">
-              <div
-                id="column_chart_2"
-                data-colors='["--vz-danger", "--vz-warning", "--vz-success"]'
-                class="apex-charts"
-                dir="ltr"
-              ></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="">
-          <div class="card">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <h4 class="card-title mb-0">จำนวนรถที่เข้าลานประมูล</h4>
-              <select id="filterChart" class="form-select w-auto">
-                <option value="quarter">Quarter</option>
-                <option value="month">Month</option>
-                <option value="week">Week</option>
-              </select>
-            </div>
-            <div class="card-body">
-              <canvas
-                id="bar1"
-                class="chartjs-chart"
-                height="400"
-                data-colors='["--vz-primary"]'
-              ></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="">
-          <div class="card">
-            <div class="card-header">
-              <h4 class="card-title mb-0">Column with Data Labels</h4>
-            </div>
-            <!-- end card header -->
-
-            <div class="card-body">
-              <div
-                id="column_chart_datalabel"
-                data-colors='["--vz-primary"]'
-                class="apex-charts"
-                dir="ltr"
-              ></div>
-            </div>
-            <!-- end card-body -->
-          </div>
-          <!-- end card -->
-        </div>
-      </div>
-
-      <!-- end row-->
     </div>
-    <!-- end .h-100-->
   </div>
-  <!-- end col -->
-
-  <!-- end col -->
 </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const today = new Date().toISOString().split('T')[0];
+
+      const fp = flatpickr("#calendarPicker", {
+          mode: "range",
+          dateFormat: "Y-m-d",
+          onChange: function (selectedDates, dateStr, instance) {
+              if (selectedDates.length === 2) {
+                  let startDate = new Date(selectedDates[0].getTime() + 86400000);
+                  let endDate = new Date(selectedDates[1].getTime() + 86400000);
+
+                  // ตั้งค่าค่าที่แสดงใน input
+                  instance.input.value = startDate.toISOString().split('T')[0] + ' - ' + endDate.toISOString().split('T')[0];
+
+                  // เพิ่มค่า start_date และ end_date ใน query string ของฟอร์ม
+                  document.querySelector('#exportForm').href = `/data/api/export-company-share?start_date=${startDate.toISOString().split('T')[0]}&end_date=${endDate.toISOString().split('T')[0]}`;
+              }
+          }
+      });
+  });
+  </script>
+
+<h1>Dashboard</h1>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Auction Data</div>
+    <div class="card-filters">
+      <label for="company">Company:</label>
+      <select id="company">
+        <option value="all">All</option>
+        <% companies.forEach(function(company) { %>
+          <option value="<%= company %>"><%= company %></option>
+        <% }); %>
+      </select>
+
+      <label for="period">Period:</label>
+      <select id="period">
+        <option value="quarter">Quarter</option>
+        <option value="month">Month</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="myChart"></canvas>
+  </div>
+  <div id="loading"><div class="spinner"></div></div>
+  <div id="data-table-container"></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Company Share by Year</div>
+    <div class="card-filters">
+      <label for="month-select">Month:</label>
+      <select id="month-select">
+        <option value="all">Year</option>
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="company-share-chart"></canvas>
+  </div>
+  
+  <div id="company-share-table-container"></div>
+</div>
+
 <%- contentFor('FooterJs') %>
 
+<!-- Chart.js -->
+<script src="/assets/libs/chart.js/chart.umd.js"></script>
+
 <script>
-  function getChartColorsArray(elementId) {
-    var element = document.getElementById(elementId);
-    if (!element) return [];
+const ctx = document.getElementById('myChart').getContext('2d');
+let chart;
 
-    var dataColors = element.getAttribute("data-colors");
-    if (!dataColors) return [];
+async function fetchData() {
+  try {
+    document.getElementById('loading').style.display = 'block';
 
-    try {
-      var colors = JSON.parse(dataColors.trim());
-      return colors.map(function (color) {
-        var trimmedColor = color.trim();
-        if (!trimmedColor.includes(",")) {
-          var cssVarValue = getComputedStyle(
-            document.documentElement
-          ).getPropertyValue(trimmedColor);
-          return cssVarValue || trimmedColor;
-        }
-        var colorParts = trimmedColor.split(",");
-        if (colorParts.length === 2) {
-          var baseColor = getComputedStyle(
-            document.documentElement
-          ).getPropertyValue(colorParts[0].trim());
-          var opacity = colorParts[1].trim();
-          return `rgba(${baseColor}, ${opacity})`;
-        }
-        return trimmedColor;
+    const company = document.getElementById('company').value;
+    const period = document.getElementById('period').value;
+    const response = await fetch(`/data/api/data?company=${company}&period=${period}`);
+    const result = await response.json();
+
+    const labels = period === 'quarter'
+      ? ['Q1', 'Q2', 'Q3', 'Q4']
+      : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    const datasets = result.map(item => {
+      const dataArray = new Array(labels.length).fill(0);
+      item.data.forEach(d => {
+        dataArray[d.period - 1] = d.count;
       });
-    } catch (error) {
-      console.error("Invalid data-colors format:", error);
-      return [];
+      return {
+        label: item.year,
+        data: dataArray,
+        backgroundColor: getRandomColor(),
+      };
+    });
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+  type: 'bar',
+  data: { labels, datasets },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Auction Data',
+      }
+    },
+    scales: {
+      y: { beginAtZero: true }
     }
   }
+});
 
-  // --------------------------chart-------------------------------------
-  var chart; var chart2;
+    renderTable(result, labels);
 
-  function updateChart() {
-    var filterType = document.getElementById("filterType").value;
-    var filterAuction = document.getElementById("filterAuction").value;
+  } catch (error) {
+    console.error("Error fetching auction data:", error);
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
+}
 
-    var chartColumnColors = getChartColorsArray("column_chart_1");
+function renderTable(result, labels) {
+  const tableContainer = document.getElementById('data-table-container');
+  let tableHTML = '<table><thead><tr><th>Year</th>';
+  labels.forEach(label => {
+    tableHTML += `<th>${label}</th>`;
+  });
+  tableHTML += '</tr></thead><tbody>';
 
-    var seriesData = <%- data %>; // ดึงข้อมูลจากเซิร์ฟเวอร์
+  result.forEach(item => {
+    tableHTML += `<tr><td>${item.year}</td>`;
+    const dataArray = new Array(labels.length).fill(0);
+    item.data.forEach(d => {
+      dataArray[d.period - 1] = d.count;
+    });
+    dataArray.forEach(count => {
+      tableHTML += `<td>${count}</td>`;
+    });
+    tableHTML += '</tr>';
+  });
+  tableHTML += '</tbody></table>';
 
-    var categoriesData = {
-        quarter: ["Q1", "Q2", "Q3", "Q4"],
-        month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    };
+  tableContainer.innerHTML = tableHTML;
+}
 
-    var selectedData = seriesData[filterType][filterAuction] || seriesData[filterType]["all"];
-    var selectedCategories = categoriesData[filterType] || categoriesData["month"];
+function getRandomColor() {
+  const r = Math.floor(Math.random() * 156) + 100;
+  const g = Math.floor(Math.random() * 156) + 100;
+  const b = Math.floor(Math.random() * 156) + 100;
+  return `rgba(${r}, ${g}, ${b}, 0.7)`;
+}
 
-    // ดึงปีทั้งหมดที่มีจากข้อมูล
-    var years = Object.keys(selectedData).sort(); // เรียงลำดับปี
-    var seriesArray = years.map(year => ({
-        name: `แนวโน้มรถเข้าลานประมูล ${seriesData.years[year]}`,
-        data: selectedData[year] || new Array(selectedCategories.length).fill(0) // ถ้าไม่มีข้อมูลใช้ 0
+document.getElementById('company').addEventListener('change', fetchData);
+document.getElementById('period').addEventListener('change', fetchData);
+fetchData();
+
+// ---------------------------
+// Company Share Chart
+// ---------------------------
+let companyShareChart;
+
+async function fetchCompanyShareData() {
+  try {
+    const selectedMonth = document.getElementById('month-select').value;
+    const response = await fetch(`/data/api/company-share?month=${selectedMonth}`);
+    const result = await response.json();
+
+    const companySet = new Set();
+    const yearSet = new Set();
+    result.forEach(item => {
+      yearSet.add(item.year);
+      item.data.forEach(row => {
+        companySet.add(row.Company);
+      });
+    });
+    const companies = Array.from(companySet);
+    const years = Array.from(yearSet).sort();
+
+    const datasets = years.map(year => ({
+      label: year,
+      data: companies.map(company => {
+        const yearData = result.find(item => item.year === year);
+        const row = yearData?.data.find(r => r.Company === company);
+        return row ? (row.count / yearData.total * 100).toFixed(2) : 0;
+      }),
+      backgroundColor: getRandomColor(),
     }));
 
-    var options = {
-        chart: { height: 350, type: "bar", toolbar: { show: false } },
-        plotOptions: { bar: { horizontal: false, columnWidth: "45%", endingShape: "rounded" } },
-        dataLabels: { enabled: false },
-        stroke: { show: true, width: 2, colors: ["transparent"] },
-        series: seriesArray,
-        colors: chartColumnColors,
-        xaxis: { categories: selectedCategories },
-        yaxis: { title: { text: "จำนวนรถ (คัน)" } },
-        grid: { borderColor: "#f1f1f1" },
-        fill: { opacity: 1 },
-        tooltip: {
-            y: {
-                formatter: function (value) {
-                    return "รถ " + value + " คัน";
-                }
-            }
-        }
-    };
+    const ctx2 = document.getElementById('company-share-chart').getContext('2d');
+    if (companyShareChart) companyShareChart.destroy();
 
-    if (chart) {
-        chart.updateOptions(options);
-    } else {
-        chart = new ApexCharts(document.querySelector("#column_chart_1"), options);
-        chart.render();
+    companyShareChart = new Chart(ctx2, {
+  type: 'bar',
+  data: { labels: companies, datasets },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,  // <<< เพิ่มบรรทัดนี้
+    plugins: {
+      title: {
+        display: true,
+        text: 'Company Share by Year',
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => `${ctx.dataset.label}: ${ctx.formattedValue}%`,
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: value => value + '%' }
+      },
+      x: { stacked: false }
     }
+  }
+});
+
+    renderCompanyShareTable(result, companies, years);
+
+  } catch (error) {
+    console.error("Error fetching company share data:", error);
+  }
 }
 
-// ----------------------------------chart 2 ------------------------------
-function updateChart2() {
-    var chartColumnColors = getChartColorsArray("column_chart_2");
-    var datause = <%- data2 %>;
-    var seriesData = datause.data;
-    var years = datause.years;
+function renderCompanyShareTable(result, companies, years) {
+  const tableContainer = document.getElementById('company-share-table-container');
+  let tableHTML = '<table><thead><tr><th>Company</th>';
 
-    var categoriesData = Object.keys(seriesData); // ดึงรายชื่อบริษัทจาก seriesData
+  years.forEach(year => {
+    tableHTML += `<th>${year} (%)</th>`;
+  });
+  tableHTML += '</tr></thead><tbody>';
 
-    // คำนวณยอดรวมของแต่ละปีเพื่อใช้แปลงเป็นเปอร์เซ็นต์
-    var totalPerYear = years.map((_, index) =>
-        categoriesData.reduce((sum, company) => sum + (seriesData[company][index] || 0), 0)
-    );
+  companies.forEach(company => {
+    tableHTML += `<tr><td>${company}</td>`;
+    years.forEach(year => {
+      const yearData = result.find(item => item.year === year);
+      const total = yearData?.total || 0;
+      const row = yearData?.data.find(r => r.Company === company);
+      const percentage = row && total > 0 ? ((row.count / total) * 100).toFixed(1) : '0.0';
+      tableHTML += `<td>${percentage}</td>`;
+    });
+    tableHTML += '</tr>';
+  });
 
-    var options = {
-        chart: { height: 350, type: "bar", toolbar: { show: false } },
-        plotOptions: {
-            bar: { horizontal: false, columnWidth: "45%", endingShape: "rounded" },
-        },
-        dataLabels: { enabled: false },
-        stroke: { show: true, width: 2, colors: ["transparent"] },
-        series: years.map((year, index) => ({
-            name: `ปี ${year}`,
-            data: categoriesData.map(company => {
-                var value = seriesData[company][index] || 0;
-                var total = totalPerYear[index] || 1; // ป้องกันหารด้วย 0
-                return ((value / total) * 100).toFixed(2); // คำนวณเป็นเปอร์เซ็นต์ และปัดเศษทศนิยม 2 ตำแหน่ง
-            }),
-        })),
-        colors: chartColumnColors,
-        xaxis: { categories: categoriesData },
-        yaxis: { title: { text: "เปอร์เซ็นต์ (%)" } },
-        grid: { borderColor: "#f1f1f1" },
-        fill: { opacity: 1 },
-        tooltip: {
-            y: {
-                formatter: function (e) {
-                    return e + " %";
-                },
-            },
-        },
-    };
-
-    if (chart2) {
-        chart2.updateOptions(options);
-    } else {
-        chart2 = new ApexCharts(document.querySelector("#column_chart_2"), options);
-        chart2.render();
-    }
+  tableContainer.innerHTML = tableHTML;
 }
 
-// Event listeners
-document.getElementById("filterType").addEventListener("change", function () {
-  updateChart();
-});
-document.getElementById("filterAuction").addEventListener("change", function () {
-  updateChart();
-});
+document.getElementById('month-select').addEventListener('change', fetchCompanyShareData);
+fetchCompanyShareData();
 
-document.addEventListener("DOMContentLoaded", function () {
-  updateChart();
-  updateChart2();
-});
 </script>
-<!-- apexcharts -->
-<script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
-<!-- <script src="/assets/js/pages/apexcharts-column.init.js"></script> -->
-<script src="/assets/libs/chart.js/chart.umd.js"></script>
-<script src="/assets/js/pages/chartjs.init.js"></script>
+
 <!-- Vector map-->
 <script src="/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
 <script src="/assets/libs/jsvectormap/maps/world-merc.js"></script>
 
 <!--Swiper slider js-->
 <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
-
-<!-- Dashboard init -->
-<script src="/assets/js/pages/dashboard-ecommerce.init.js"></script>

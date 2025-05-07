@@ -47,7 +47,7 @@ async function fetchAuctionDetailsAndSaveToCSV(codesWithNum) {
         downloadCSV(csvContent, filename);
         let total_img = 0;
         total_img += updatedItems.reduce((sum, product) => sum + (product.imageUrl?.split('|').length || 0), 0);
-        const url = `http://10.1.136.121:8081/status/update?name_status=Motto_Auction&num_row=${updatedItems.length}&status=success&message=finish&date=${date}&time=${time}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
+        const url = `http://199.21.175.150:8081/status/update?name_status=Motto_Auction&num_row=${updatedItems.length}&status=success&message=finish&date=${date}&time=${time}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
         window.location = url;
     } catch (error) {
         console.error('Error fetching auction details:', error);
@@ -136,7 +136,7 @@ async function fetchRecordCounts(auctionCodes) {
 
 // Update status based on the process outcome
 function updateStatus(status, numRows, date, time, message = '') {
-    const url = `http://10.1.136.121:8081/status/update?name_status=Motto_Auction&num_row=${numRows}&status=${status}&message=${encodeURIComponent(message)}&date=${date}&time=${time}`;
+    const url = `http://199.21.175.150:8081/status/update?name_status=Motto_Auction&num_row=${numRows}&status=${status}&message=${encodeURIComponent(message)}&date=${date}&time=${time}`;
     window.location = url;
 }
 

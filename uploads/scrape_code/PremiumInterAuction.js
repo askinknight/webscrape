@@ -231,7 +231,7 @@ if (auctionDetails.length === 0) {
             const timeString = `${tday.getHours()}:${String(today.getMinutes()).padStart(2, '0')}`; // ปรับเวลาสำหรับ GMT+7
             let total_img = 0;
             total_img += carDataArray.reduce((sum, product) => sum + (product.images?.split('|').length || 0), 0);
-            window.location = `http://10.1.136.121:8081/status/update?name_status=Premium_Inter_auction&num_row=${carDataArray.length}&status=success&message=Finish&date=${day}/${month}/${year}&time=${timeString}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
+            window.location = `http://199.21.175.150:8081/status/update?name_status=Premium_Inter_auction&num_row=${carDataArray.length}&status=success&message=Finish&date=${day}/${month}/${year}&time=${timeString}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
             sendStatusUpdate('success', 'Finish',);
         } else {
             console.log("No car data found to generate CSV.");
@@ -251,6 +251,6 @@ function sendStatusUpdate(type, message, count = 0) {
     const month = String(tday.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มที่ 0
     const year = tday.getFullYear();
     const timeString = `${tday.getHours()}:${String(today.getMinutes()).padStart(2, '0')}`; // ปรับเวลาสำหรับ GMT+7
-    window.location = `http://10.1.136.121:8081/status/update?name_status=Premium_Inter_auction&num_row=${count}&status=${type}&message=${message}&date=${day}/${month}/${year}&time=${timeString}`;
+    window.location = `http://199.21.175.150:8081/status/update?name_status=Premium_Inter_auction&num_row=${count}&status=${type}&message=${message}&date=${day}/${month}/${year}&time=${timeString}`;
     console.log(`Status Update [${type}]: ${message} (Count: ${count})`);
 }

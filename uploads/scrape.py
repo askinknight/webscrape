@@ -68,7 +68,7 @@ def send_status_update(url, filenamepath, status, message):
         print(f"Error sending status: {e}")
 
 # ส่งสถานะเริ่มต้น
-start_url = "http://10.1.136.121:8081/status/insert"
+start_url = "http://199.21.175.150:8081/status/insert"
 send_status_update(start_url, filenamepath, "process", "start")
 
 try:
@@ -88,11 +88,11 @@ try:
 
 except Exception as err:
     # ส่งสถานะเมื่อเกิดข้อผิดพลาด
-    error_url = "http://10.1.136.121:8081/status/update"
+    error_url = "http://199.21.175.150:8081/status/update"
     send_status_update(error_url, filenamepath, "error", str(err))
 
 finally:
     # ปิด driver
     driver.quit()
-    incomplateurl = "http://10.1.136.121:8081/status/update"
+    incomplateurl = "http://199.21.175.150:8081/status/update"
     send_status_update(incomplateurl, filenamepath, "warn", "Python run finished but not complete; driver quit")

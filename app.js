@@ -48,7 +48,7 @@ app.use(session({
 }));
 
 
-
+/*
 app.use(async (req, res, next) => {
     if (!req.app.locals.roleMap || Object.keys(req.app.locals.roleMap).length === 0) {
         console.log("🔄 Reloading role map...");
@@ -73,7 +73,7 @@ app.use(async (req, res, next) => {
     }
     next();
 });
-
+*/
 
 
     

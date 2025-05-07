@@ -275,14 +275,14 @@
         total_img += scrapedData.reduce((sum, product) => sum + (product['Image URL']?.split('|').length || 0), 0);
 
         // Send success status
-        const successUrl = `http://10.1.136.121:8081/status/update?name_status=Apple_Auction&num_row=${scrapedData.length}&status=success&message=finish&date=${todayNow}&time=${hours}:${minutes}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
+        const successUrl = `http://199.21.175.150:8081/status/update?name_status=Apple_Auction&num_row=${scrapedData.length}&status=success&message=finish&date=${todayNow}&time=${hours}:${minutes}&csv_name=${filename.replace(/\//g, '_').replace(/:/g, '_')}&total_img=${total_img}`;
         window.location = successUrl;
     } else {
         console.log('No data found for today.');
 
         // Send warning status with error message
         const errorMessage = encodeURIComponent('No auctions or products found for today.');
-        const warnUrl = `http://10.1.136.121:8081/status/update?name_status=Apple_Auction&num_row=0&status=warn&message=${errorMessage}&date=${todayNow}&time=${hours}:${minutes}`;
+        const warnUrl = `http://199.21.175.150:8081/status/update?name_status=Apple_Auction&num_row=0&status=warn&message=${errorMessage}&date=${todayNow}&time=${hours}:${minutes}`;
         window.location = warnUrl;
     }
 })();

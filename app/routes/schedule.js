@@ -122,7 +122,7 @@ router.get('/', async (req, res) => {
     try {
         await updateStatusesToRest();
         const [rows] = await db.query('SELECT * FROM scrape_configs ORDER BY action_name');
-        res.render('Schedule', {
+        res.render('schedule', {
             configs: rows,
             scheduledJobs,
             title: 'Schedule',

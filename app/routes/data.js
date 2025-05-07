@@ -1,217 +1,97 @@
 const fs = require('fs');
-const db = require('../config/database');
+const pool = require('../config/database');
 const express = require('express');
 const router = express.Router();
 
-// ฟังก์ชันสำหรับดึงข้อมูลจากฐานข้อมูลและบันทึกเป็นไฟล์ JSON
-async function getData() {
-    const query = `
-        SELECT
-            YEAR(Auction_date) AS year,
-            QUARTER(Auction_date) AS quarter,
-            MONTH(Auction_date) AS month,
-            Company AS action_name,
-            COUNT(*) AS value
-        FROM dashboard
-        WHERE Auction_date >= CURDATE() - INTERVAL 2 YEAR
-        GROUP BY year, quarter, month, action_name
 
-        UNION
-
-        SELECT
-            YEAR(Auction_date) AS year,
-            QUARTER(Auction_date) AS quarter,
-            MONTH(Auction_date) AS month,
-            'all' AS action_name,
-            COUNT(*) AS value
-        FROM dashboard
-        WHERE Auction_date >= CURDATE() - INTERVAL 2 YEAR
-        GROUP BY year, quarter, month
-
-        ORDER BY action_name, year DESC, quarter, month;
-    `;
-
+  router.get('/api/company-share', async (req, res) => {
+    const { month = 'all' } = req.query;
+    const monthInt = month === 'all' ? 'all' : parseInt(month);
+    console.log(monthInt);
+    const currentYear = new Date().getFullYear();
+    const years = [currentYear - 2, currentYear - 1, currentYear];
+  
     try {
-        const [rows] = await db.execute(query);
-        return rows; // ส่งกลับข้อมูลที่ดึงจากฐานข้อมูล
-    } catch (error) {
-        console.error('Error executing query:', error);
-        return []; // ถ้าเกิดข้อผิดพลาด ให้คืนค่า array ว่าง ๆ
-    }
-}
-
-// ฟังก์ชันสำหรับดึงข้อมูลจากฐานข้อมูลและบันทึกเป็นไฟล์ JSON (แบบที่ 2)
-async function getData2() {
-    const query = `
-      SELECT
-        DATE_FORMAT(Auction_date, '%Y') AS year,
-        Company as action_name,
-        COUNT(*) AS value
-      FROM dashboard
-      WHERE DATE_FORMAT(Auction_date, '%Y') BETWEEN DATE_FORMAT(CURRENT_DATE, '%Y') - 2 AND DATE_FORMAT(CURRENT_DATE, '%Y')
-      GROUP BY year, action_name;
-    `;
-
-    try {
-        const [rows] = await db.execute(query);
-        return rows; // ส่งกลับข้อมูลที่ดึงจากฐานข้อมูล
-    } catch (error) {
-        console.error('Error executing query:', error);
-        return []; // ถ้าเกิดข้อผิดพลาด ให้คืนค่า array ว่าง ๆ
-    }
-}
-
-// ฟังก์ชันเพื่อจัดรูปแบบข้อมูลที่ดึงจากฐานข้อมูลให้เป็นรูปแบบที่ต้องการ
-function transformData(data) {
-    const seriesData = {
-        quarter: {},
-        month: {},
-    };
-
-    // จัดกลุ่มข้อมูลตามปี
-    data.forEach(row => {
-        const { year, quarter, month, action_name, value } = row;
-
-        // สร้างกลุ่มปีและไตรมาสใน seriesData
-        if (!seriesData.quarter[year]) {
-            seriesData.quarter[year] = {};
+      const result = [];
+  
+      for (const year of years) {
+        let query = '';
+        let params = [];
+  
+        if (monthInt === 'all') {
+          query = `
+            SELECT Company, COUNT(*) AS count
+            FROM dashboard
+            WHERE YEAR(Auction_date) = ?
+            GROUP BY Company
+            ORDER BY Company
+          `;
+          params = [year];
+        } else {
+          query = `
+            SELECT Company, COUNT(*) AS count
+            FROM dashboard
+            WHERE YEAR(Auction_date) = ? AND MONTH(Auction_date) = ?
+            GROUP BY Company
+            ORDER BY Company
+          `;
+          params = [year, monthInt];
         }
-        if (!seriesData.quarter[year][quarter]) {
-            seriesData.quarter[year][quarter] = {};
-        }
-        if (!seriesData.quarter[year][quarter][action_name]) {
-            seriesData.quarter[year][quarter][action_name] = [];
-        }
-
-        // เพิ่มค่า value สำหรับแต่ละ action_name ตามไตรมาส
-        seriesData.quarter[year][quarter][action_name].push(value);
-
-        // สร้างกลุ่มเดือนใน seriesData
-        if (!seriesData.month[year]) {
-            seriesData.month[year] = {};
-        }
-        if (!seriesData.month[year][action_name]) {
-            seriesData.month[year][action_name] = new Array(12).fill(0);
-        }
-
-        // เพิ่มค่า value ตามเดือน
-        seriesData.month[year][action_name][month - 1] = value; // เดือนเริ่มที่ 0
-    });
-    return seriesData;
-}
-
-function transformDatause(data) {
-    const result = {
-        years: [],
-        quarter: {
-            all: [],
-            Apple: [],
-            Motto: [],
-            Express: [],
-            BuyAtSiam: [],
-            Inter: [],
-            Premium: [],
-            Sahakrane: [],
-            Siaminter: []
-        },
-        month: {
-            all: [],
-            Apple: [],
-            Motto: [],
-            Express: [],
-            BuyAtSiam: [],
-            Inter: [],
-            Premium: [],
-            Sahakrane: [],
-            Siaminter: []
-        }
-    };
-
-    // Transform quarter data
-    for (const year in data.quarter) {
-        result.years.push(year); // เก็บค่าปีทั้งหมด
-        const quarters = data.quarter[year];
-        const allQuarterData = [];
-        const appleQuarterData = [];
-        const mottoQuarterData = [];
-        const expressQuarterData = [];
-        const buyAtSiamQuarterData = [];
-        const interQuarterData = [];
-        const premiumQuarterData = [];
-        const sahakraneQuarterData = [];
-        const siaminterQuarterData = [];
-
-        for (const quarter in quarters) {
-            const auctionData = quarters[quarter];
-
-            allQuarterData.push(eval(auctionData.all.join('+')));
-            appleQuarterData.push(eval(auctionData.Apple_Auction.join('+')));
-            mottoQuarterData.push(eval(auctionData.Motto_Auction.join('+')));
-            expressQuarterData.push(eval(auctionData.Auction_express.join('+')));
-            buyAtSiamQuarterData.push(eval(auctionData.Buy_at_Siam.join('+')));
-            interQuarterData.push(eval(auctionData.Inter_auction.join('+')));
-            premiumQuarterData.push(eval(auctionData.Premium_Inter_Auction.join('+')));
-            sahakraneQuarterData.push(eval(auctionData.Sahakrane_Auction.join('+')));
-            siaminterQuarterData.push(eval(auctionData.SiamInter_Auction.join('+')));
-        }
-
-        result.quarter.all.push(allQuarterData);
-        result.quarter.Apple.push(appleQuarterData);
-        result.quarter.Motto.push(mottoQuarterData);
-        result.quarter.Express.push(expressQuarterData);
-        result.quarter.BuyAtSiam.push(buyAtSiamQuarterData);
-        result.quarter.Inter.push(interQuarterData);
-        result.quarter.Premium.push(premiumQuarterData);
-        result.quarter.Sahakrane.push(sahakraneQuarterData);
-        result.quarter.Siaminter.push(siaminterQuarterData);
-    }
-
-    // Transform month data
-    for (const year in data.month) {
-        result.years.push(year); // เก็บค่าปีใน month ด้วย
-        const months = data.month[year];
-
-        result.month.Apple.push(months.Apple_Auction);
-        result.month.Motto.push(months.Motto_Auction);
-        result.month.Express.push(months.Auction_express);
-        result.month.BuyAtSiam.push(months.Buy_at_Siam);
-        result.month.Inter.push(months.Inter_auction);
-        result.month.Premium.push(months.Premium_Inter_Auction);
-        result.month.Sahakrane.push(months.Sahakrane_Auction);
-        result.month.Siaminter.push(months.SiamInter_Auction);
-        result.month.all.push(months.all);
-    }
-
-    // กำจัดค่าปีที่ซ้ำ
-    result.years = [...new Set(result.years)].sort((a, b) => a - b);
-
-    return result;
-}
-
-// ฟังก์ชันแปลงข้อมูลจาก getData2 ให้อยู่ในโครงสร้างที่ต้องการ
-function transformData2(data) {
-    const transformedData = { years: [], data: {} };
-
-    // ดึงรายการปีทั้งหมดที่มีอยู่และเรียงจากมากไปน้อย
-    const years = [...new Set(data.map(row => row.year))].sort((a, b) => a - b);
-    transformedData.years = years; // เก็บปีไว้ในโครงสร้างข้อมูล
-
-    // ดึงรายการบริษัททั้งหมดที่มีอยู่
-    const companies = [...new Set(data.map(row => row.action_name))];
-
-    // สร้างโครงสร้างข้อมูล
-    companies.forEach(company => {
-        transformedData.data[company] = years.map(year => {
-            // ดึงค่าของปีนั้น ๆ ตามบริษัท
-            const record = data.find(row => row.year === year && row.action_name === company);
-            return record ? record.value : 0; // ถ้าไม่มีค่าให้ใส่ 0
+  
+        const [rows] = await pool.execute(query, params);
+        const total = rows.reduce((sum, row) => sum + row.count, 0);
+  
+        result.push({
+          year,
+          total,
+          data: rows
         });
-    });
-
-    return transformedData;
-}
-
-
+      }
+      res.json(result);
+    } catch (err) {
+      console.error('Company share error:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+  
+  // API to fetch data with caching
+  router.get('/api/data', async (req, res) => {
+    const { company = 'all', period } = req.query;
+    const currentYear = new Date().getFullYear();
+    const years = [currentYear - 2, currentYear - 1, currentYear];
+  
+    try {
+      const data = [];
+  
+      for (const year of years) {
+        const params = company === 'all' ? [year] : [company, year];
+        let query = '';
+  
+        if (period === 'quarter') {
+          query = company === 'all'
+            ? 'SELECT QUARTER(Auction_date) AS period, COUNT(*) AS count FROM dashboard WHERE YEAR(Auction_date) = ? GROUP BY QUARTER(Auction_date) ORDER BY period'
+            : 'SELECT QUARTER(Auction_date) AS period, COUNT(*) AS count FROM dashboard WHERE Company = ? AND YEAR(Auction_date) = ? GROUP BY QUARTER(Auction_date) ORDER BY period';
+        } else if (period === 'month') {
+          query = company === 'all'
+            ? 'SELECT MONTH(Auction_date) AS period, COUNT(*) AS count FROM dashboard WHERE YEAR(Auction_date) = ? GROUP BY MONTH(Auction_date) ORDER BY period'
+            : 'SELECT MONTH(Auction_date) AS period, COUNT(*) AS count FROM dashboard WHERE Company = ? AND YEAR(Auction_date) = ? GROUP BY MONTH(Auction_date) ORDER BY period';
+        }
+  
+        if (!query) {
+          return res.status(400).json({ error: 'Invalid period parameter' });
+        }
+  
+        const [rows] = await pool.execute(query, params);
+        data.push({ year, data: rows });
+      }
+  
+      res.json(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 
 // Mockup Data Page
@@ -222,10 +102,7 @@ router.get('/', async (req, res) => {
     const userRole = req.session.user.role;
     const roleMap = req.app.locals.roleMap || {}; // ถ้า roleMap ยังไม่มี ให้ใช้ object ว่างแทน
 
-    // ดึงข้อมูลจากฐานข้อมูล
-    const rows = await getData();
-    const rows2 = await getData2();
-
+    const [companies] = await pool.query('SELECT DISTINCT Company FROM dashboard ORDER BY Company');
     // ส่งข้อมูลที่แปลงแล้วไปแสดงผล
     res.render('data', {
         title: 'Dashboard',
@@ -234,9 +111,70 @@ router.get('/', async (req, res) => {
         layout: 'layouts/layout-horizontal',
         session: req.session,
         roleMap: roleMap,
-        data: JSON.stringify(transformDatause(transformData(rows))),
-        data2: JSON.stringify(transformData2(rows2))
+        companies: companies.map(row => row.Company)
     });
 });
+
+router.get('/api/export-company-share', async (req, res) => {
+  const { start_date, end_date } = req.query;
+  console.log(start_date, end_date);
+
+  try {
+    const query = `
+      SELECT 
+        Seller_name AS "ชื่อผู้ขาย",
+        COUNT(CASE WHEN Company = 'Apple_Auction' THEN 1 END) AS "APPLE",
+        COUNT(CASE WHEN Company = 'Auction_express' THEN 1 END) AS "AUCT",
+        COUNT(CASE WHEN Company = 'Motto_Auction' THEN 1 END) AS "Motto",
+        COUNT(CASE WHEN Company = 'SiamInter_Auction' THEN 1 END) AS "SIA",
+        COUNT(CASE WHEN Company = 'Sahakrane_Auction' THEN 1 END) AS "สหเครน",
+        COUNT(CASE WHEN Company = 'Inter_auction' THEN 1 END) AS "สากล",
+        COUNT(CASE WHEN Company = 'Premium_Inter_Auction' THEN 1 END) AS "PIA",
+        COUNT(CASE WHEN Company = 'Auction_express' THEN 1 END) AS "AX",
+        COUNT(DISTINCT CASE WHEN Company = 'Apple_Auction' THEN Company END) AS "APPLE(ไม่นับซ้ำ)",
+        COUNT(DISTINCT CASE WHEN Company = 'Auction_express' THEN Company END) AS "AUCT(ไม่นับซ้ำ)",
+        COUNT(DISTINCT CASE WHEN Company = 'Motto_Auction' THEN Company END) AS "Motto(ไม่นับซ้ำ)",
+        COUNT(DISTINCT CASE WHEN Company = 'SiamInter_Auction' THEN Company END) AS "SIA(ไม่นับซ้ำ)",
+        COUNT(DISTINCT CASE WHEN Company = 'Sahakrane_Auction' THEN Company END) AS "สหเครน(ไม่นับซ้ำ)",
+        COUNT(DISTINCT CASE WHEN Company = 'Inter_auction' THEN Company END) AS "สากล(ไม่นับซ้ำ)",
+        COUNT(DISTINCT CASE WHEN Company = 'Premium_Inter_Auction' THEN Company END) AS "PIA(ไม่นับซ้ำ)",
+        COUNT(DISTINCT CASE WHEN Company = 'Auction_express' THEN Company END) AS "AX(ไม่นับซ้ำ)"
+      FROM dashboard
+      WHERE 
+        (Auction_date BETWEEN ? AND ? OR ? IS NULL OR ? IS NULL)
+      GROUP BY Seller_name
+    `;
+
+    const params = [start_date, end_date, start_date, end_date];
+    
+    const [rows] = await pool.query(query, params);
+
+    let csv = '';
+    if (rows.length > 0) {
+      csv += Object.keys(rows[0]).join(',') + '\n';
+      rows.forEach(row => {
+        csv += Object.values(row).map(val => `"${val}"`).join(',') + '\n';
+      });
+    }
+
+    const BOM = '\uFEFF';
+    const csvWithBom = BOM + csv;
+
+    const filename = `summary_${start_date}_${end_date}.csv`;
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(csvWithBom);
+
+  } catch (error) {
+    console.error('Export company share error:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
+
+
 
 module.exports = router;
