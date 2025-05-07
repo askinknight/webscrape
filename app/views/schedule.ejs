@@ -62,7 +62,7 @@
                             <% configs.forEach(config => { %>
                                 <tr id="row-<%= config.action_name %>">
                                     <td><%= config.action_name %></td>
-                                    <td><%= config.url %></td>
+                                    <td><a target="_blank" href="<%= config.url %>"><%= config.url %></a></td>
                                     <td class="status-cell" id="status-<%= config.action_name %>"></td>
                                     <td id="num-<%= config.action_name %>"></td>
                                     <td id="time-<%= config.action_name %>"></td>
